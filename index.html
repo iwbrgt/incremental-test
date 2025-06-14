@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <link rel="stylesheet" type="text/css" href="interface.css" />
+    </head>
+    
+    <body>
+
+        <div id="infopanel">
+            <p>Hover over buttons for information!</p>
+        </div>
+
+        <div id="log">
+
+        </div>
+
+
+        <div>
+            <button id="tab1" onclick="mainTab()" onmouseover="hoverButton = 'tab1'">Main</button>
+            <button id="tab2" onclick="upgradeTab()" onmouseover="hoverButton = 'tab2'">Upgrades</button>
+            <button id="tab3" onclick="aboutTab()" onmouseover="hoverButton = 'tab3'">About</button>
+            <button id="tab4" onclick="optionsTab()" onmouseover="hoverButton = 'tab4'">Options</button>
+
+        </div>
+
+        <div id="display">e</div>
+
+        <div id="maintab" style="visibility: hidden;">
+
+            <p>
+                Triangles: <span id="triangleDisplay">0</span>
+                ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
+            </p>
+            
+            <p>
+                <button id="button1" onclick="triangleClick(1)" onmouseover="hoverButton = 'button1'">click</button>
+            </p>
+
+            <p>
+                Autoclickers: <span id="autoclickerDisplay">0</span>
+            </p>
+        
+            <button id="autoclickerBuy" onclick="autoclicker.buy(1)" onmouseover="hoverButton = 'autoclickerBuy'">
+                Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
+            </button>
+            
+        </div>
+
+        <div id="upgradetab" style="visibility: hidden;">
+            
+            <p>
+                Triangles: <span id="triangleDisplay">0</span>
+                ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
+            </p>
+
+            <p>
+                <button id="clickAmountUpgrade" onclick="clickAmountUpgrade.buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
+                    Increase amount of triangles gained on each click<hr>
+                    Cost: <span id="clickAmountUpgradeCostDisplay">0</span><hr>
+                    Current: <span id="clickAmountUpgradeAmountDisplay">0</span>
+                </button>
+            </p>
+            <p>
+                <button id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'"">
+                    Decrease the amount of milliseconds between autoclicker clicks<hr>
+                    Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
+                    Current: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
+                </button>
+                
+                <button id="autoclickerCostScalingUpgrade" onclick="autoclickerCostScalingUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
+                    Decrease the cost scaling of autoclickers<hr>
+                    Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
+                    Current: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
+                </button>
+            </p>
+
+        </div>
+
+        <div id="abouttab" style="visibility: hidden;">
+
+        </div>
+
+        <div id="optionstab" style="visibility: hidden;">
+
+            <p>
+                <button id="deleteSave" onclick="deleteSave()" onmouseover="hoverButton = 'deleteSave'">Delete Save</button>
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+
+
+
+
+
+</html>
