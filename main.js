@@ -14,12 +14,14 @@ var lastDate = Date.now();
 var tab = 0;
 
 var triangles = 0;
+var trianglesPerSecond = 0;
 var trianglesPerClick = 1;
 
 
 class Buyable {
 
-    constructor(amount, cost, costScaling, production) {
+    constructor(name, amount, cost, costScaling, production) {
+        this.name = name;
         this.amount = amount;
         this.cost = cost;
         this.costScaling = costScaling;
@@ -41,21 +43,19 @@ class Buyable {
         document.getElementById(upgradeName + "Display").innerHTML = round(this.amount, 2);
         document.getElementById(upgradeName + "CostDisplay").innerHTML = round(this.cost, 2);
 
-
-
-
     }
 
 }
 
-var autoclicker = new Buyable(0, 10, 2, 1000); //production doesn't matter since production is based on clickAmount
+var autoclicker = new Buyable("autoclicker", 0, 10, 2, 1000); //production doesn't matter since production is based on clickAmount
 autoclicker.interval = 10000;
-var drawer = new Buyable(0, 500, 2, 1);
+var drawer = new Buyable("drawer", 0, 500, 2, 1);
 
 
 class Upgrade {
     
-    constructor(amount, cost, costScaling, max) {
+    constructor(name, amount, cost, costScaling, max) {
+        this.name = name;
         this.amount = amount;
         this.cost = cost;
         this.costScaling = costScaling;
@@ -74,13 +74,18 @@ class Upgrade {
 
     displayNumbers(upgradeName) {
         document.getElementById(upgradeName + "CostDisplay").innerHTML = round(this.cost, 2);
+        if (this.amount >= this.max && this.max != -1) {
+            document.getElementById(this.name).setAttribute("disabled", "");
+        }
     }
+
 
 }
 
-var clickAmountUpgrade = new Upgrade(0, 50, 2.5, -1);
-var autoclickerIntervalUpgrade = new Upgrade(0, 100, 2.5, -1);
-var autoclickerCostScalingUpgrade = new Upgrade(0, 10000, 10, 5);
+var clickAmountUpgrade = new Upgrade("clickAmountUpgrade", 0, 50, 2.5, -1);
+var autoclickerIntervalUpgrade = new Upgrade("autoclickerIntervalUpgrade", 0, 100, 2.5, -1);
+var autoclickerCostScalingUpgrade = new Upgrade("autoclickerCostScalingUpgrade", 0, 10000, 10, 5);
+var drawerProductionUpgrade = new Upgrade("drawerProductionUpgrade", 0, 2000, 1.75, -1);
 
 
 function mainTab() {
@@ -142,10 +147,13 @@ function updateInfoboxContent() {
     allInfoboxContent.set('tab3', "about tab");
     allInfoboxContent.set('tab4', "option tab");
     allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, which automatically clicks the button every " + autoclicker.interval + " milliseconds");
+    allInfoboxContent.set('drawerBuy', "Buy a drawer, which draws " + drawer.production + " triangles per second.");
     allInfoboxContent.set('clickAmountUpgrade', "Upgrades the triangles gotten from each click. Affects autoclicker clicks.");
     allInfoboxContent.set('autoclickerIntervalUpgrade', "Decreases the interval between autoclicker clicks by 20%.");
     allInfoboxContent.set('autoclickerCostScalingUpgrade', "Decreases the cost scaling on autoclickers by .1");
+    allInfoboxContent.set('drawerProductionUpgrade', "Increases the per-second production of drawers by 1 per upgrade");
     allInfoboxContent.set('deleteSave', "Permananently deletes the localStorage autosave");
+
 
 
     infoboxContent = allInfoboxContent.get(hoverButton);
@@ -161,7 +169,14 @@ function updateNumbers() {
     autoclicker.cost = 10 * (autoclicker.costScaling ** autoclicker.amount);
     autoclicker.interval = 10000 * ((.8) ** autoclickerIntervalUpgrade.amount);
     trianglesPerClick = 1 + clickAmountUpgrade.amount;
+
+    drawer.production = drawerProductionUpgrade.amount + 1;
+
+
+
+    trianglesPerSecond = drawer.amount * drawer.production + autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick;
     triangleClick(autoclicker.amount * 50 / autoclicker.interval);
+    triangles += drawer.amount * drawer.production / 20;
     
 }
 
@@ -173,18 +188,28 @@ function loadAutoSave() {
         if (typeof obj.triangles !== "undefined") triangles = obj.triangles;
         if (typeof obj.buyables[0].amount !== "undefined") autoclicker.amount = obj.buyables[0].amount;
         if (typeof obj.buyables[0].interval !== "undefined") autoclicker.interval = obj.buyables[0].interval;
+        if (typeof obj.buyables[1].amount !== "undefined") drawer.amount = obj.buyables[1].amount;
         if (typeof obj.upgrades[0].amount !== "undefined") clickAmountUpgrade.amount = obj.upgrades[0].amount;
         if (typeof obj.upgrades[1].amount !== "undefined") autoclickerIntervalUpgrade.amount = obj.upgrades[1].amount;
         if (typeof obj.upgrades[2].amount !== "undefined") autoclickerCostScalingUpgrade.amount = obj.upgrades[2].amount;
+        if (typeof obj.upgrades[3].amount !== "undefined") drawerProductionUpgrade.amount = obj.upgrades[3].amount;
         if (typeof obj.time !== "undefined") lastDate = obj.time;
         
+
+
+
+
+
+
         autoclicker.costScaling = 2.0 - autoclickerCostScalingUpgrade.amount * .1;
         autoclicker.cost = 10 * (autoclicker.costScaling ** autoclicker.amount);
         trianglesPerClick = 1 + clickAmountUpgrade.amount;
         clickAmountUpgrade.cost = 50 * (2.5 ** clickAmountUpgrade.amount);
         autoclickerIntervalUpgrade.cost = 100 * (2.5 ** autoclickerIntervalUpgrade.amount);
         autoclickerCostScalingUpgrade.cost = 10000 * (10 ** autoclickerCostScalingUpgrade.amount);
-
+        drawer.cost = 500 * (drawer.costScaling ** drawer.amount);
+        drawerProductionUpgrade.cost = 2000 * (1.75 ** drawerProductionUpgrade.amount);
+        drawer.production = drawerProductionUpgrade + 1;
    
     }
 }
@@ -213,15 +238,18 @@ function update() {
     
     //update number displays
     document.getElementById("triangleDisplay").innerHTML = round(triangles, 2);
-    document.getElementById("trianglesPerSecond").innerHTML = round(autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick, 2);
+    document.getElementById("trianglesPerSecond").innerHTML = round(trianglesPerSecond, 2);
     document.getElementById("clickAmountUpgradeAmountDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
     document.getElementById("autoclickerIntervalUpgradeAmountDisplay").innerHTML = round(autoclicker.interval, 3);
     document.getElementById("autoclickerCostScalingUpgradeAmountDisplay").innerHTML = round(autoclicker.costScaling, 3);
+    document.getElementById("drawerProductionUpgradeAmountDisplay").innerHTML = round(drawerProductionUpgrade.amount + 1, 3);
 
     autoclicker.displayNumbers("autoclicker");
+    drawer.displayNumbers("drawer");
     clickAmountUpgrade.displayNumbers("clickAmountUpgrade");
     autoclickerIntervalUpgrade.displayNumbers("autoclickerIntervalUpgrade");
     autoclickerCostScalingUpgrade.displayNumbers("autoclickerCostScalingUpgrade");
+    drawerProductionUpgrade.displayNumbers("drawerProductionUpgrade");
 
 
 
@@ -248,6 +276,11 @@ var tmpSave = {
             amount: 0,
             interval: 0
         },
+
+        {
+            name: "drawer",
+            amount: 0
+        }
     ],
     upgrades: [
 
@@ -264,6 +297,11 @@ var tmpSave = {
         {
             name: "autoclickerCostScaling",
             amount: 0
+        },
+
+        {
+            name: "drawerProductionUpgrade",
+            amount: 0
         }
 
     ]
@@ -275,9 +313,11 @@ function autoSave() {
     tmpSave.time = lastDate;
     tmpSave.buyables[0].amount = autoclicker.amount;
     tmpSave.buyables[0].interval = autoclicker.interval;
+    tmpSave.buyables[1].amount = drawer.amount;
     tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
     tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
     tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
+    tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
 
     localStorage.setItem('save', JSON.stringify(tmpSave));
 

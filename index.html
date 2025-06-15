@@ -45,6 +45,15 @@
                 Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
             </button>
             
+            <p>
+                Drawers: <span id="drawerDisplay">0</span>
+            </p>
+        
+            <button id="drawerBuy" onclick="drawer.buy(1)" onmouseover="hoverButton = 'drawerBuy'">
+                Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
+            </button>
+
+
         </div>
 
         <div id="upgradetab" style="visibility: hidden;">
@@ -72,6 +81,14 @@
                     Decrease the cost scaling of autoclickers<hr>
                     Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
+                </button>
+            </p>
+
+            <p>
+                <button id="drawerProductionUpgrade" onclick="drawerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
+                    Increases production of drawers<hr>
+                    Cost: <span id="drawerProductionUpgradeCostDisplay">0</span><hr>
+                    Current: <span id="drawerProductionUpgradeAmountDisplay">0</span>
                 </button>
             </p>
 
