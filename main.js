@@ -5,6 +5,7 @@ var allInfoboxContent = new Map;
 var ticks = 0n;
 var expectedTicks = 0n;
 var lastDate = Date.now();
+var autosaveTimer = 0;
 
 
 
@@ -50,6 +51,8 @@ class Buyable {
 var autoclicker = new Buyable("autoclicker", 0, 10, 2, 1000); //production doesn't matter since production is based on clickAmount
 autoclicker.interval = 10000;
 var drawer = new Buyable("drawer", 0, 500, 2, 1);
+var printer = new Buyable("printer", 0, 5000, 2, 5);
+var mathematician = new Buyable ("mathematician", 0, 10000, 2.25, 3); //produces research instead of triangles 
 
 
 class Upgrade {
@@ -85,7 +88,8 @@ class Upgrade {
 var clickAmountUpgrade = new Upgrade("clickAmountUpgrade", 0, 50, 2.5, -1);
 var autoclickerIntervalUpgrade = new Upgrade("autoclickerIntervalUpgrade", 0, 100, 2.5, -1);
 var autoclickerCostScalingUpgrade = new Upgrade("autoclickerCostScalingUpgrade", 0, 10000, 10, 5);
-var drawerProductionUpgrade = new Upgrade("drawerProductionUpgrade", 0, 2000, 1.75, -1);
+var drawerProductionUpgrade = new Upgrade("drawerProductionUpgrade", 0, 1000, 1.75, -1);
+var printerProductionUpgrade = new Upgrade("drawerProductionUpgrade", 0, 10000, 1.75, -1);
 
 
 function mainTab() {
@@ -146,12 +150,14 @@ function updateInfoboxContent() {
     allInfoboxContent.set('tab2', "upgrades tab");
     allInfoboxContent.set('tab3', "about tab");
     allInfoboxContent.set('tab4', "option tab");
-    allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, which automatically clicks the button every " + autoclicker.interval + " milliseconds");
-    allInfoboxContent.set('drawerBuy', "Buy a drawer, which draws " + drawer.production + " triangles per second.");
+    allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, each automatically clicks the button every " + autoclicker.interval + " milliseconds");
+    allInfoboxContent.set('drawerBuy', "Buy a drawer, each draws " + drawer.production + " triangles per second.");
+    allInfoboxContent.set('printerBuy', "Buy a printer, each draws " + printer.production + " triangles per second.");
     allInfoboxContent.set('clickAmountUpgrade', "Upgrades the triangles gotten from each click. Affects autoclicker clicks.");
     allInfoboxContent.set('autoclickerIntervalUpgrade', "Decreases the interval between autoclicker clicks by 20%.");
     allInfoboxContent.set('autoclickerCostScalingUpgrade', "Decreases the cost scaling on autoclickers by .1");
     allInfoboxContent.set('drawerProductionUpgrade', "Increases the per-second production of drawers by 1 per upgrade");
+    allInfoboxContent.set('printerProductionUpgrade', "Increases the per-second production of printers by 20% per upgrade");
     allInfoboxContent.set('deleteSave', "Permananently deletes the localStorage autosave");
 
 
@@ -172,9 +178,12 @@ function updateNumbers() {
 
     drawer.production = drawerProductionUpgrade.amount + 1;
 
+    printer.production = 5 * (1.2 ** printerProductionUpgrade.amount);
 
 
-    trianglesPerSecond = drawer.amount * drawer.production + autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick;
+
+
+    trianglesPerSecond = printer.amount * printer.production + drawer.amount * drawer.production + autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick;
     triangleClick(autoclicker.amount * 50 / autoclicker.interval);
     triangles += drawer.amount * drawer.production / 20;
     
@@ -208,7 +217,7 @@ function loadAutoSave() {
         autoclickerIntervalUpgrade.cost = 100 * (2.5 ** autoclickerIntervalUpgrade.amount);
         autoclickerCostScalingUpgrade.cost = 10000 * (10 ** autoclickerCostScalingUpgrade.amount);
         drawer.cost = 500 * (drawer.costScaling ** drawer.amount);
-        drawerProductionUpgrade.cost = 2000 * (1.75 ** drawerProductionUpgrade.amount);
+        drawerProductionUpgrade.cost = 1000 * (1.75 ** drawerProductionUpgrade.amount);
         drawer.production = drawerProductionUpgrade + 1;
    
     }
@@ -228,11 +237,10 @@ function update() {
     expectedTicks = BigInt(Date.now() - lastDate) / 50n; 
     lastDate = Date.now();
     
-    while (expectedTicks - ticks > 1000) {
+    for (var i = 0; i < expectedTicks; i++) {
         updateNumbers();
-        ticks += 1n;
-    } 
-    ticks = 0n;
+    }
+    
     
     updateNumbers();
     
@@ -243,13 +251,19 @@ function update() {
     document.getElementById("autoclickerIntervalUpgradeAmountDisplay").innerHTML = round(autoclicker.interval, 3);
     document.getElementById("autoclickerCostScalingUpgradeAmountDisplay").innerHTML = round(autoclicker.costScaling, 3);
     document.getElementById("drawerProductionUpgradeAmountDisplay").innerHTML = round(drawerProductionUpgrade.amount + 1, 3);
+    document.getElementById("printerProductionUpgradeAmountDisplay").innerHTML = round(printer.production, 3);
 
     autoclicker.displayNumbers("autoclicker");
     drawer.displayNumbers("drawer");
+    printer.displayNumbers("printer");
+
+
+
     clickAmountUpgrade.displayNumbers("clickAmountUpgrade");
     autoclickerIntervalUpgrade.displayNumbers("autoclickerIntervalUpgrade");
     autoclickerCostScalingUpgrade.displayNumbers("autoclickerCostScalingUpgrade");
     drawerProductionUpgrade.displayNumbers("drawerProductionUpgrade");
+    printerProductionUpgrade.displayNumbers("printerProductionUpgrade");
 
 
 
@@ -309,17 +323,24 @@ var tmpSave = {
 };
 function autoSave() {
 
-    tmpSave.triangles = triangles;
-    tmpSave.time = lastDate;
-    tmpSave.buyables[0].amount = autoclicker.amount;
-    tmpSave.buyables[0].interval = autoclicker.interval;
-    tmpSave.buyables[1].amount = drawer.amount;
-    tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
-    tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
-    tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
-    tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
+    autosaveTimer += 1;
 
-    localStorage.setItem('save', JSON.stringify(tmpSave));
+    if (autosaveTimer >= 150) {
+        tmpSave.triangles = triangles;
+        tmpSave.time = lastDate;
+        tmpSave.buyables[0].amount = autoclicker.amount;
+        tmpSave.buyables[0].interval = autoclicker.interval;
+        tmpSave.buyables[1].amount = drawer.amount;
+        tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
+        tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
+        tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
+        tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
+
+        localStorage.setItem('save', JSON.stringify(tmpSave));
+        autosaveTimer = 0;
+    }
+
+    document.getElementById("autosaveDisplay").innerHTML = 15 - autosaveTimer / 10;
 
 }
 
@@ -336,4 +357,4 @@ window.setInterval(function(){
 
 window.setInterval(function(){
     autoSave();
-}, 15000)
+}, 100)

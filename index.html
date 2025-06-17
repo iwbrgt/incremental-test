@@ -53,44 +53,71 @@
                 Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
             </button>
 
+            <p>
+                Printers: <span id="printerDisplay">0</span>
+            </p>
+        
+            <button id="printerBuy" onclick="printer.buy(1)" onmouseover="hoverButton = 'printerBuy'">
+                Buy a printer for <span id="printerCostDisplay">0</span> triangles
+            </button>
+
 
         </div>
 
         <div id="upgradetab" style="visibility: hidden;">
-            
-            <p>
+
+            <br>
+
+            <div>
                 Triangles: <span id="triangleDisplay">0</span>
                 ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
-            </p>
+            </div>
 
-            <p>
+            <br>
+
+            <div>
                 <button id="clickAmountUpgrade" onclick="clickAmountUpgrade.buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
-                    Increase amount of triangles gained on each click<hr>
+                    Click Power<hr>
                     Cost: <span id="clickAmountUpgradeCostDisplay">0</span><hr>
                     Current: <span id="clickAmountUpgradeAmountDisplay">0</span>
                 </button>
-            </p>
-            <p>
+            </div>
+            
+            <br>
+
+            <div>
                 <button id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'"">
-                    Decrease the amount of milliseconds between autoclicker clicks<hr>
+                    Autoclicker Interval<hr>
                     Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
                 </button>
                 
                 <button id="autoclickerCostScalingUpgrade" onclick="autoclickerCostScalingUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
-                    Decrease the cost scaling of autoclickers<hr>
+                    Autoclicker Cost Scaling<hr>
                     Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
                 </button>
-            </p>
+            </div>
 
-            <p>
+            <br>
+
+            <div>
                 <button id="drawerProductionUpgrade" onclick="drawerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
-                    Increases production of drawers<hr>
+                    Drawer Production<hr>
                     Cost: <span id="drawerProductionUpgradeCostDisplay">0</span><hr>
                     Current: <span id="drawerProductionUpgradeAmountDisplay">0</span>
                 </button>
-            </p>
+            </div>
+
+            <br>
+
+            <div>
+                <button id="printerProductionUpgrade" onclick="printerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'printerProductionUpgrade'">
+                    Printer Production<hr>
+                    Cost: <span id="printerProductionUpgradeCostDisplay">0</span><hr>
+                    Current: <span id="printerProductionUpgradeAmountDisplay">0</span>
+                </button>
+            </div>
 
         </div>
 
@@ -100,6 +127,13 @@
 
         <div id="optionstab" style="visibility: hidden;">
 
+            <p>
+                Next autosave in <span id="autosaveDisplay">0</span> seconds
+            </p>
+            
+            
+            
+            
             <p>
                 <button id="deleteSave" onclick="deleteSave()" onmouseover="hoverButton = 'deleteSave'">Delete Save</button>
             </p>
