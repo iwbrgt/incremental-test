@@ -198,10 +198,12 @@ function loadAutoSave() {
         if (typeof obj.buyables[0].amount !== "undefined") autoclicker.amount = obj.buyables[0].amount;
         if (typeof obj.buyables[0].interval !== "undefined") autoclicker.interval = obj.buyables[0].interval;
         if (typeof obj.buyables[1].amount !== "undefined") drawer.amount = obj.buyables[1].amount;
+        if (typeof obj.buyables[2].amount !== "undefined") printer.amount = obj.buyables[2].amount;
         if (typeof obj.upgrades[0].amount !== "undefined") clickAmountUpgrade.amount = obj.upgrades[0].amount;
         if (typeof obj.upgrades[1].amount !== "undefined") autoclickerIntervalUpgrade.amount = obj.upgrades[1].amount;
         if (typeof obj.upgrades[2].amount !== "undefined") autoclickerCostScalingUpgrade.amount = obj.upgrades[2].amount;
         if (typeof obj.upgrades[3].amount !== "undefined") drawerProductionUpgrade.amount = obj.upgrades[3].amount;
+        if (typeof obj.upgrades[4].amount !== "undefined") printerProductionUpgrade.amount = obj.upgrades[4].amount;
         if (typeof obj.time !== "undefined") lastDate = obj.time;
         
 
@@ -212,14 +214,20 @@ function loadAutoSave() {
 
         autoclicker.costScaling = 2.0 - autoclickerCostScalingUpgrade.amount * .1;
         autoclicker.cost = 10 * (autoclicker.costScaling ** autoclicker.amount);
+        
         trianglesPerClick = 1 + clickAmountUpgrade.amount;
         clickAmountUpgrade.cost = 50 * (2.5 ** clickAmountUpgrade.amount);
+        
         autoclickerIntervalUpgrade.cost = 100 * (2.5 ** autoclickerIntervalUpgrade.amount);
         autoclickerCostScalingUpgrade.cost = 10000 * (10 ** autoclickerCostScalingUpgrade.amount);
+        
         drawer.cost = 500 * (drawer.costScaling ** drawer.amount);
         drawerProductionUpgrade.cost = 1000 * (1.75 ** drawerProductionUpgrade.amount);
         drawer.production = drawerProductionUpgrade + 1;
-   
+
+        printer.cost = 5000 * (printer.costScaling ** printer.amount);
+        printerProductionUpgrade.cost = 10000 * (1.75 ** printerProductionUpgrade.amount);
+        printer.production = 5 * 1.2 ** (printerProductionUpgrade);
     }
 }
 
@@ -294,6 +302,11 @@ var tmpSave = {
         {
             name: "drawer",
             amount: 0
+        },
+       
+        {
+            name: "printer",
+            amount: 0
         }
     ],
     upgrades: [
@@ -316,8 +329,12 @@ var tmpSave = {
         {
             name: "drawerProductionUpgrade",
             amount: 0
-        }
+        },
 
+        {
+            name: "printerProductionUpgrade",
+            amount: 0
+        }
     ]
 
 };
@@ -331,16 +348,18 @@ function autoSave() {
         tmpSave.buyables[0].amount = autoclicker.amount;
         tmpSave.buyables[0].interval = autoclicker.interval;
         tmpSave.buyables[1].amount = drawer.amount;
+        tmpSave.buyables[2].amount = printer.amount;
         tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
         tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
         tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
         tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
+        tmpSave.upgrades[4].amount = printerProductionUpgrade.amount;
 
         localStorage.setItem('save', JSON.stringify(tmpSave));
         autosaveTimer = 0;
     }
 
-    document.getElementById("autosaveDisplay").innerHTML = 15 - autosaveTimer / 10;
+    document.getElementById("autosaveDisplay").innerHTML = round(15 - autosaveTimer / 10, 1);
 
 }
 
