@@ -18,6 +18,12 @@ var triangles = 0;
 var trianglesPerSecond = 0;
 var trianglesPerClick = 1;
 
+var researchTemp = 0;
+var researchScaling = 10;
+var research = 0;
+var researchThreshhold = 10;
+
+
 
 class Buyable {
 
@@ -52,8 +58,9 @@ var autoclicker = new Buyable("autoclicker", 0, 10, 2, 1000); //production doesn
 autoclicker.interval = 10000;
 var drawer = new Buyable("drawer", 0, 500, 2, 1);
 var printer = new Buyable("printer", 0, 5000, 2, 5);
-var mathematician = new Buyable ("mathematician", 0, 10000, 2.25, 3); //produces research instead of triangles 
-
+var mathematician = new Buyable ("mathematician", 0, 20000, 2.25, -10); //produces research instead of triangles 
+mathematician.enabled = true;
+mathematician.researchProduction = 1;
 
 class Upgrade {
     
@@ -112,6 +119,11 @@ function optionsTab() {
     display();
 }
 
+function researchTab() {
+    tab = 4;
+    display();
+}
+
 function display() {
     
     switch (tab) {
@@ -127,6 +139,9 @@ function display() {
         case 3:
             document.getElementById("display").innerHTML = document.getElementById("optionstab").innerHTML;
             break;
+        case 4:
+            document.getElementById("display").innerHTML = document.getElementById("researchtab").innerHTML;
+            break;            
 
     }
 }
@@ -135,6 +150,11 @@ display();
 
 function triangleClick(amount) {
     triangles += amount * trianglesPerClick;
+}
+
+function toggleMathematician() {
+    mathematician.enabled = !mathematician.enabled;
+
 }
 
 
@@ -146,19 +166,29 @@ function round(num, digits) {
 function updateInfoboxContent() {
     
     allInfoboxContent.set('button1', "Click to gain " + trianglesPerClick + " triangles");
+    
     allInfoboxContent.set('tab1', "main tab");
     allInfoboxContent.set('tab2', "upgrades tab");
     allInfoboxContent.set('tab3', "about tab");
     allInfoboxContent.set('tab4', "option tab");
+    allInfoboxContent.set('tab5', "research tab");
+    
     allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, each automatically clicks the button every " + autoclicker.interval + " milliseconds");
     allInfoboxContent.set('drawerBuy', "Buy a drawer, each draws " + drawer.production + " triangles per second.");
     allInfoboxContent.set('printerBuy', "Buy a printer, each draws " + printer.production + " triangles per second.");
+    
     allInfoboxContent.set('clickAmountUpgrade', "Upgrades the triangles gotten from each click. Affects autoclicker clicks.");
     allInfoboxContent.set('autoclickerIntervalUpgrade', "Decreases the interval between autoclicker clicks by 20%.");
     allInfoboxContent.set('autoclickerCostScalingUpgrade', "Decreases the cost scaling on autoclickers by .1");
     allInfoboxContent.set('drawerProductionUpgrade', "Increases the per-second production of drawers by 1 per upgrade");
     allInfoboxContent.set('printerProductionUpgrade', "Increases the per-second production of printers by 20% per upgrade");
+    
     allInfoboxContent.set('deleteSave', "Permananently deletes the localStorage autosave");
+
+    allInfoboxContent.set('mathematicianEnable', "Toggles whether mathematicians are enabled");
+    allInfoboxContent.set('mathematicianBuy', "Buy an mathematician, each consumes " + Math.abs(mathematician.production) + " triangles to produce research per second");
+
+
 
 
 
@@ -171,6 +201,7 @@ function updateInfoboxContent() {
 }
 
 function updateNumbers() {
+    
     autoclicker.costScaling = 2.0 - autoclickerCostScalingUpgrade.amount * .1;
     autoclicker.cost = 10 * (autoclicker.costScaling ** autoclicker.amount);
     autoclicker.interval = 10000 * ((.8) ** autoclickerIntervalUpgrade.amount);
@@ -183,9 +214,20 @@ function updateNumbers() {
 
 
 
-    trianglesPerSecond = printer.amount * printer.production + drawer.amount * drawer.production + autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick;
+    trianglesPerSecond = printer.amount * printer.production + drawer.amount * drawer.production + autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick + (mathematician.production * (mathematician.enabled)) * mathematician.amount;
+    
+    if (triangles + mathematician.production >= 0 && mathematician.enabled) {
+        researchTemp += mathematician.researchProduction / 20 * mathematician.amount;
+    }
+
+    if (researchTemp >= researchThreshhold) {
+        research++;        
+    }
+
+    researchThreshhold = 10 * (researchScaling ** research);
+
     triangleClick(autoclicker.amount * 50 / autoclicker.interval);
-    triangles += drawer.amount * drawer.production / 20;
+    triangles += (printer.amount * printer.production + drawer.amount * drawer.production + (mathematician.production * (mathematician.enabled)) * mathematician.amount) / 20;
     
 }
 
@@ -195,15 +237,25 @@ function loadAutoSave() {
     if (save != null && save != undefined) {
         var obj = JSON.parse(save);
         if (typeof obj.triangles !== "undefined") triangles = obj.triangles;
+        
+        if (typeof obj.research !== "undefined") research = obj.research;
+
+        if (typeof obj.researchTemp !== "undefined") researchTemp = obj.researchTemp;
+
+        if (typeof obj.researchScaling !== "undefined") researchScaling = obj.researchScaling;        
+        
         if (typeof obj.buyables[0].amount !== "undefined") autoclicker.amount = obj.buyables[0].amount;
         if (typeof obj.buyables[0].interval !== "undefined") autoclicker.interval = obj.buyables[0].interval;
         if (typeof obj.buyables[1].amount !== "undefined") drawer.amount = obj.buyables[1].amount;
         if (typeof obj.buyables[2].amount !== "undefined") printer.amount = obj.buyables[2].amount;
+        if (typeof obj.buyables[3].amount !== "undefined") mathematician.amount = obj.buyables[3].amount;
+
         if (typeof obj.upgrades[0].amount !== "undefined") clickAmountUpgrade.amount = obj.upgrades[0].amount;
         if (typeof obj.upgrades[1].amount !== "undefined") autoclickerIntervalUpgrade.amount = obj.upgrades[1].amount;
         if (typeof obj.upgrades[2].amount !== "undefined") autoclickerCostScalingUpgrade.amount = obj.upgrades[2].amount;
         if (typeof obj.upgrades[3].amount !== "undefined") drawerProductionUpgrade.amount = obj.upgrades[3].amount;
         if (typeof obj.upgrades[4].amount !== "undefined") printerProductionUpgrade.amount = obj.upgrades[4].amount;
+        
         if (typeof obj.time !== "undefined") lastDate = obj.time;
         
 
@@ -228,6 +280,11 @@ function loadAutoSave() {
         printer.cost = 5000 * (printer.costScaling ** printer.amount);
         printerProductionUpgrade.cost = 10000 * (1.75 ** printerProductionUpgrade.amount);
         printer.production = 5 * 1.2 ** (printerProductionUpgrade);
+
+        mathematician.cost = 20000 * (mathematician.costScaling ** mathematician.amount);
+
+
+
     }
 }
 
@@ -245,7 +302,7 @@ function update() {
     expectedTicks = BigInt(Date.now() - lastDate) / 50n; 
     lastDate = Date.now();
     
-    for (var i = 0; i < expectedTicks; i++) {
+    for (var i = 1; i < expectedTicks; i++) {
         updateNumbers();
     }
     
@@ -255,6 +312,14 @@ function update() {
     //update number displays
     document.getElementById("triangleDisplay").innerHTML = round(triangles, 2);
     document.getElementById("trianglesPerSecond").innerHTML = round(trianglesPerSecond, 2);
+    
+    document.getElementById("researchDisplay").innerHTML = round(research, 1);
+    document.getElementById("researchTempDisplay").innerHTML = round(researchTemp * 10, 2);
+    document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold * 10, 2);
+    
+    
+    
+    
     document.getElementById("clickAmountUpgradeAmountDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
     document.getElementById("autoclickerIntervalUpgradeAmountDisplay").innerHTML = round(autoclicker.interval, 3);
     document.getElementById("autoclickerCostScalingUpgradeAmountDisplay").innerHTML = round(autoclicker.costScaling, 3);
@@ -264,6 +329,7 @@ function update() {
     autoclicker.displayNumbers("autoclicker");
     drawer.displayNumbers("drawer");
     printer.displayNumbers("printer");
+    mathematician.displayNumbers("mathematician");
 
 
 
@@ -282,8 +348,14 @@ function update() {
     //display info
     updateInfoboxContent();
     document.getElementById("infopanel").innerHTML = "<p>" + infoboxContent + "</p>";
-
-
+    if (mathematician.amount > 0) {
+        document.getElementById("tab5").style.visibility = 'visible';
+    }
+    if (mathematician.enabled) {
+        document.getElementById("mathematicianEnable").innerHTML = 'on';
+    } else {
+        document.getElementById("mathematicianEnable").innerHTML = 'off';
+    }
 
 }
 
@@ -291,6 +363,9 @@ var tmpSave = {
 
     triangles: 0,
     time: 0,
+    research: 0,
+    researchTemp: 0,
+    researchScaling: 0,
     buyables: [
         
         {
@@ -307,6 +382,12 @@ var tmpSave = {
         {
             name: "printer",
             amount: 0
+        },
+        
+        {
+            name: "mathematician",
+            amount: 0,
+            
         }
     ],
     upgrades: [
@@ -343,12 +424,26 @@ function autoSave() {
     autosaveTimer += 1;
 
     if (autosaveTimer >= 150) {
+        
         tmpSave.triangles = triangles;
+
+        tmpSave.research = research;
+
+        tmpSave.researchTemp = researchTemp;
+
+        tmpSave.researchScaling = researchScaling;
+        
         tmpSave.time = lastDate;
+        
         tmpSave.buyables[0].amount = autoclicker.amount;
         tmpSave.buyables[0].interval = autoclicker.interval;
+        
         tmpSave.buyables[1].amount = drawer.amount;
+        
         tmpSave.buyables[2].amount = printer.amount;
+        
+        tmpSave.buyables[3].amount = mathematician.amount;
+        
         tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
         tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
         tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;

@@ -21,6 +21,7 @@
             <button id="tab2" onclick="upgradeTab()" onmouseover="hoverButton = 'tab2'">Upgrades</button>
             <button id="tab3" onclick="aboutTab()" onmouseover="hoverButton = 'tab3'">About</button>
             <button id="tab4" onclick="optionsTab()" onmouseover="hoverButton = 'tab4'">Options</button>
+            <button id="tab5" onclick="researchTab()" onmouseover="hoverButton = 'tab5'" style="visibility: hidden;">Research</button>
 
         </div>
 
@@ -28,39 +29,60 @@
 
         <div id="maintab" style="visibility: hidden;">
 
-            <p>
-                Triangles: <span id="triangleDisplay">0</span>
-                ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
-            </p>
+            <div id="producers">
+                <p>
+                    Triangles: <span id="triangleDisplay">0</span>
+                    ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
+                </p>
+                
+                <p>
+                    <button id="button1" onclick="triangleClick(1)" onmouseover="hoverButton = 'button1'">click</button>
+                </p>
+
+                <p>
+                    Producers:
+                </p>
+                
+                <p>
+                    Autoclickers: <span id="autoclickerDisplay">0</span>
+                </p>
             
-            <p>
-                <button id="button1" onclick="triangleClick(1)" onmouseover="hoverButton = 'button1'">click</button>
-            </p>
-
-            <p>
-                Autoclickers: <span id="autoclickerDisplay">0</span>
-            </p>
-        
-            <button id="autoclickerBuy" onclick="autoclicker.buy(1)" onmouseover="hoverButton = 'autoclickerBuy'">
-                Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
-            </button>
+                <button id="autoclickerBuy" onclick="autoclicker.buy(1)" onmouseover="hoverButton = 'autoclickerBuy'">
+                    Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
+                </button>
+                
+                <p>
+                    Drawers: <span id="drawerDisplay">0</span>
+                </p>
             
-            <p>
-                Drawers: <span id="drawerDisplay">0</span>
-            </p>
-        
-            <button id="drawerBuy" onclick="drawer.buy(1)" onmouseover="hoverButton = 'drawerBuy'">
-                Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
-            </button>
+                <button id="drawerBuy" onclick="drawer.buy(1)" onmouseover="hoverButton = 'drawerBuy'">
+                    Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
+                </button>
 
-            <p>
-                Printers: <span id="printerDisplay">0</span>
-            </p>
-        
-            <button id="printerBuy" onclick="printer.buy(1)" onmouseover="hoverButton = 'printerBuy'">
-                Buy a printer for <span id="printerCostDisplay">0</span> triangles
-            </button>
+                <p>
+                    Printers: <span id="printerDisplay">0</span>
+                </p>
+            
+                <button id="printerBuy" onclick="printer.buy(1)" onmouseover="hoverButton = 'printerBuy'">
+                    Buy a printer for <span id="printerCostDisplay">0</span> triangles
+                </button>
+            </div>
 
+            <div id="research">
+               
+                <p>
+                    Researchers:
+                </p>
+               
+                <p>
+                    Mathematicians: <span id="mathematicianDisplay">0</span>
+                    <button id="mathematicianEnable" onclick="toggleMathematician()" onmouseover="hoverButton = 'mathematicianEnable'">on</button>
+                </p>
+            
+                <button id="mathematicianBuy" onclick="mathematician.buy(1)" onmouseover="hoverButton = 'mathematicianBuy'">
+                    Buy a mathematician for <span id="mathematicianCostDisplay">0</span> triangles
+                </button>
+            </div>
 
         </div>
 
@@ -138,6 +160,21 @@
                 <button id="deleteSave" onclick="deleteSave()" onmouseover="hoverButton = 'deleteSave'">Delete Save</button>
             </p>
 
+
+
+        </div>
+
+        <div id="researchtab" style="visibility: hidden;">
+
+            <p>
+                Research: <span id="researchDisplay">0</span>
+            </p>
+            <p>
+                Triangles invested into research: <span id="researchTempDisplay">0</span>
+            </p>
+            <p>
+                Triangles to next research: <span id="researchThreshholdDisplay">0</span>
+            </p>
 
 
         </div>
