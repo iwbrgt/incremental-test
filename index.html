@@ -2,7 +2,11 @@
 <html>
     
     <head>
-        <link rel="stylesheet" type="text/css" href="interface.css" />
+        <title>
+            incremental test
+        </title>
+        
+        <link rel="stylesheet" type="text/css" href="interface.css">
     </head>
     
     <body>
@@ -108,7 +112,7 @@
             <br>
 
             <div>
-                <button id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'"">
+                <button id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'">
                     Autoclicker Interval<hr>
                     Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
@@ -167,7 +171,7 @@
         <div id="researchtab" style="visibility: hidden;">
 
             <p>
-                Research: <span id="researchDisplay">0</span>
+                Research: <span id="researchDisplay">0</span>/<span id="totalResearchDisplay">0</span>
             </p>
             <p>
                 Triangles invested into research: <span id="researchTempDisplay">0</span>
@@ -175,7 +179,16 @@
             <p>
                 Triangles to next research: <span id="researchThreshholdDisplay">0</span>
             </p>
+            <p>
+                <button id="respec" onclick="respecResearch()" onmouseover="hoverButton = 'respec'">Respec research</button>
+            </p>
+            <div id="researchArea">
+                
+                <button id="_1_1" onclick="_1_1.buy()" onmouseover=""></button>
 
+
+
+            </div>
 
         </div>
 

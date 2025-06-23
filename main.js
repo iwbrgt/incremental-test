@@ -1,7 +1,6 @@
-
     var infoboxContent = "Hover over buttons for information!";
     var hoverButton = 'e';
-    var allInfoboxContent = new Map;
+    var allInfoboxContent = new Map();
     var ticks = 0n;
     var expectedTicks = 0n;
     var lastDate = Date.now();
@@ -21,18 +20,8 @@
     var researchTemp = 0;
     var researchScaling = 10;
     var research = 0;
+    var totalResearch = 0;
     var researchThreshhold = 10;
-
-    var researches = {
-
-
-
-
-
-
-
-    }
-
 
 
     class Buyable {
@@ -66,9 +55,9 @@
 
     const baseBuyableCosts = [10, 500, 5000, 20000];
 
-    const baseBuyableCostScaling = [2, 2, 2, 2.25];
+    const baseBuyableCostScaling = [2, 1.8, 2, 2.25];
 
-    const baseBuyableProduction = [1000, 1, 5, -10];
+    const baseBuyableProduction = [1000, 2, 8, -50];
 
     var autoclicker = new Buyable(
         "autoclicker", 
@@ -141,7 +130,7 @@
 
     const baseUpgradeCosts = [50, 100, 10000, 1000, 10000];
 
-    const baseUpgradeCostScaling = [2.5, 2.5, 10, 1.75, 1.75];
+    const baseUpgradeCostScaling = [2.5, 2.5, 10, 1.5, 1.75];
 
 
     var clickAmountUpgrade = new Upgrade(
@@ -187,6 +176,105 @@
         baseUpgradeCostScaling[4], 
         -1
     );
+
+
+    class Research {
+
+        constructor(name, row, column, required, cost, bought, description) {
+            this.name = name;
+            this.row = row;
+            this.column = column;
+            this.required = required;
+            this.cost = cost;
+            this.bought = bought;
+            this.description = description;
+        }
+
+        buy() {
+            if (research >= this.cost && (this.required.bought || this.required === 'n/a') && !this.bought) {
+                research = research - this.cost;
+                this.bought = true;
+            }
+        }
+
+
+    }
+
+
+
+        
+            var _1_1 = new Research(
+                "_1_1", 
+                1, 
+                1, 
+                'n/a', 
+                2, 
+                false,
+                "Give your drawers and mathematicians tools, doubling their production"
+            );
+            var _2_1 = new Research(
+                "_2_1", 
+                2, 
+                1, 
+                _1_1, 
+                2, 
+                false,
+                "Invent more specialized tools for your mathematicians, multiplying their production by 4"
+            );
+            var _2_2 = new Research(
+                "_2_2", 
+                2,
+                2,
+                _1_1,
+                2, 
+                false,
+                "Invent more specialized tools for drawers, multiplying their production by 4" 
+            );
+        
+    var researches = [
+        _1_1,
+        _2_1,
+        _2_2,
+
+    ];
+
+
+    function displayResearches() {
+        var contents = "";
+        var row = 1;
+        for (var i of researches) {
+            
+            if (i.row > row) {
+                contents = contents + "<hr>";
+            }
+            row = i.row;
+            contents = contents + "<button id=\"" + i.name + "\" onmouseover=\"hoverButton = \'" + i.name +"\'\" onclick=\"" + i.name + ".buy()\">";
+            
+            contents = contents + "Buy research " + i.name + "</button>";
+            
+
+        }
+
+        document.getElementById("researchArea").innerHTML = contents;
+
+    } 
+        displayResearches();
+
+
+
+    function respecResearch() {
+
+        research = totalResearch;
+
+        for (var i of researches) {
+                i.bought = false;
+            
+        }
+
+
+
+    }
+
 
 
     function mainTab() {
@@ -279,7 +367,13 @@
         allInfoboxContent.set('mathematicianBuy', "Buy an mathematician, each consumes " + Math.abs(mathematician.production) + " triangles to produce research per second");
 
 
+        allInfoboxContent.set('respec', "Resets all research and refunds research points spent");
 
+        for (var i of researches) {
+
+            allInfoboxContent.set(i.name, i.description);
+
+        }
 
 
         infoboxContent = allInfoboxContent.get(hoverButton);
@@ -321,12 +415,14 @@
         autoclicker.costScaling = baseBuyableCostScaling[0] - 0.1 * autoclickerCostScalingUpgrade.amount;
         autoclicker.cost = baseBuyableCosts[0] * (autoclicker.costScaling ** autoclicker.amount);
         // autoclicker.production = 
-        autoclicker.interval = 10000 * (0.8 ** autoclickerIntervalUpgrade.amount)
+        autoclicker.interval = 10000 * (0.8 ** autoclickerIntervalUpgrade.amount);
         
         //drawer.amount
         drawer.costScaling = baseBuyableCostScaling[1];
         drawer.cost = baseBuyableCosts[1] * (drawer.costScaling ** drawer.amount);
         drawer.production = baseBuyableProduction[1] + drawerProductionUpgrade.amount;
+        drawer.production = drawer.production * (1 + _1_1.bought);
+        drawer.production = drawer.production * (1 + 3 * _2_2.bought);
         
         //printer.amount
         printer.costScaling = baseBuyableCostScaling[2];
@@ -337,11 +433,14 @@
         mathematician.costScaling = baseBuyableCostScaling[3];
         mathematician.cost = baseBuyableCosts[3] * (mathematician.costScaling ** mathematician.amount);
         mathematician.production = baseBuyableProduction[3];
+        mathematician.production = mathematician.production * (1 + _1_1.bought);
+        mathematician.production = mathematician.production * (1 + 3 * _2_1.bought);
 
         trianglesPerSecond = printer.amount * printer.production;
         trianglesPerSecond += drawer.amount * drawer.production;
-        trianglesPerSecond += (mathematician.production * (mathematician.enabled)) * mathematician.amount;
-        
+        if (triangles + mathematician.production >= 0) {
+            trianglesPerSecond += (mathematician.production * (mathematician.enabled)) * mathematician.amount;
+        }
         trianglesPerClick = 1 + clickAmountUpgrade.amount;
         
         triangles += trianglesPerSecond / 20;
@@ -351,14 +450,15 @@
         trianglesPerSecond += autoclicker.amount * 1000 / autoclicker.interval * trianglesPerClick;
         
         if (triangles + mathematician.production >= 0 && mathematician.enabled) {
-            researchTemp += mathematician.researchProduction / 20 * mathematician.amount;
+            researchTemp += -1 * mathematician.production / 20 * mathematician.amount;
         }
 
         if (researchTemp >= researchThreshhold) {
-            research++;        
+            research++;
+            totalResearch++;        
         }
 
-        researchThreshhold = 10 * (researchScaling ** research);
+        researchThreshhold = 10 * (researchScaling ** totalResearch);
 
     }
 
@@ -370,6 +470,7 @@
             if (typeof obj.triangles !== "undefined") triangles = obj.triangles;
             
             if (typeof obj.research !== "undefined") research = obj.research;
+            if (typeof obj.totalResearch !== "undefined") totalResearch = obj.totalResearch;
 
             if (typeof obj.researchTemp !== "undefined") researchTemp = obj.researchTemp;
 
@@ -424,6 +525,7 @@
         document.getElementById("trianglesPerSecond").innerHTML = round(trianglesPerSecond, 2);
         
         document.getElementById("researchDisplay").innerHTML = round(research, 1);
+        document.getElementById("totalResearchDisplay").innerHTML = round(totalResearch, 1);
         document.getElementById("researchTempDisplay").innerHTML = round(researchTemp * 10, 2);
         document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold * 10, 2);
         
@@ -474,6 +576,7 @@
         triangles: 0,
         time: 0,
         research: 0,
+        totalResearch: 0,
         researchTemp: 0,
         researchScaling: 0,
         buyables: [
@@ -539,6 +642,8 @@
 
             tmpSave.research = research;
 
+            tmpSave.totalResearch = totalResearch;
+
             tmpSave.researchTemp = researchTemp;
 
             tmpSave.researchScaling = researchScaling;
@@ -581,4 +686,4 @@
 
     window.setInterval(function(){
         autoSave();
-    }, 100)
+    }, 100);
