@@ -457,9 +457,7 @@
             research++;
             researchThreshhold = 10 * (researchScaling ** totalResearch); 
         }
-        if (totalResearch !== Math.trunc(Math.log(researchTemp) / Math.log(researchScaling))) {
-            research++;
-        }
+
         totalResearch = Math.trunc(Math.log(researchTemp) / Math.log(researchScaling));
         if (research > totalResearch) {
             research = totalResearch;
@@ -496,7 +494,7 @@
             if (typeof obj.upgrades[4].amount !== "undefined") printerProductionUpgrade.amount = obj.upgrades[4].amount;
             
             if (typeof obj.researches !== "undefined") {
-                for (var i in researches) {
+                for (var i of researches) {
                     if (obj.researches.includes(i.name)) {
                         i.bought = true;
                     }
@@ -647,7 +645,7 @@
             }
         ],
         researches: [
-
+            ""
         ]
 
     };
@@ -684,7 +682,7 @@
             tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
             tmpSave.upgrades[4].amount = printerProductionUpgrade.amount;
             
-            for (var i in researches) {
+            for (var i of researches) {
                 if (i.bought) {
                     tmpSave.researches.push(i.name);
                 }
