@@ -455,8 +455,14 @@
 
         if (researchTemp >= researchThreshhold) {
             research++;
-            totalResearch++;       
             researchThreshhold = 10 * (researchScaling ** totalResearch); 
+        }
+        if (totalResearch !== Math.trunc(Math.log(researchTemp) / Math.log(researchScaling))) {
+            research++;
+        }
+        totalResearch = Math.trunc(Math.log(researchTemp) / Math.log(researchScaling));
+        if (research > totalResearch) {
+            research = totalResearch;
         }
 
         researchThreshhold = 10 * (researchScaling ** totalResearch);
@@ -489,6 +495,15 @@
             if (typeof obj.upgrades[3].amount !== "undefined") drawerProductionUpgrade.amount = obj.upgrades[3].amount;
             if (typeof obj.upgrades[4].amount !== "undefined") printerProductionUpgrade.amount = obj.upgrades[4].amount;
             
+            if (typeof obj.researches !== "undefined") {
+                for (var i in researches) {
+                    if (obj.researches.includes(i.name)) {
+                        i.bought = true;
+                    }
+                }
+            }
+
+
             if (typeof obj.time !== "undefined") lastDate = obj.time;
             
 
@@ -527,8 +542,8 @@
         
         document.getElementById("researchDisplay").innerHTML = round(research, 1);
         document.getElementById("totalResearchDisplay").innerHTML = round(totalResearch, 1);
-        document.getElementById("researchTempDisplay").innerHTML = round(researchTemp * 10, 2);
-        document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold * 10, 2);
+        document.getElementById("researchTempDisplay").innerHTML = round(researchTemp, 2);
+        document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold, 2);
         
         
         
@@ -630,6 +645,9 @@
                 name: "printerProductionUpgrade",
                 amount: 0
             }
+        ],
+        researches: [
+
         ]
 
     };
@@ -665,6 +683,12 @@
             tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
             tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
             tmpSave.upgrades[4].amount = printerProductionUpgrade.amount;
+            
+            for (var i in researches) {
+                if (i.bought) {
+                    tmpSave.researches.push(i.name);
+                }
+            }
 
             localStorage.setItem('save', JSON.stringify(tmpSave));
             autosaveTimer = 0;
