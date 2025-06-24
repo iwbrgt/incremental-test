@@ -1,0 +1,63 @@
+body 
+{
+    background-color: antiquewhite;
+}
+#infopanel
+{
+    border-width: thick;
+    border-radius: 5px;
+    background-color: aquamarine;
+    text-align: center;
+    padding: 3px;
+}
+
+#tabs
+{
+    text-align: center;
+    padding: 10px;
+}
+#tabs button 
+{
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+}
+
+.triangleDisplay
+{
+    text-align: center;
+}
+.button1
+{
+    text-align: center;
+    justify-self: center;
+}
+.button1 button 
+{
+    height: 50px;
+    width: 100px;
+    border-radius: 10px;
+}
+
+.buyable
+{
+padding-left: 50px;
+}
+
+button:hover  
+{
+    background-color: rgb(181, 200, 218);
+}
+
+
+
+
+
+
+.buildingCatagories
+{
+    padding-left: 10px;
+    text-align: left;
+    text-shadow: lightgray 3px 3px 3px;
+    font-size: 25px;
+}

@@ -455,7 +455,8 @@
 
         if (researchTemp >= researchThreshhold) {
             research++;
-            totalResearch++;        
+            totalResearch++;       
+            researchThreshhold = 10 * (researchScaling ** totalResearch); 
         }
 
         researchThreshhold = 10 * (researchScaling ** totalResearch);
