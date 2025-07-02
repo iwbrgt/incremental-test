@@ -11,24 +11,21 @@
     
     <body>
 
-        <div id="infopanel">
-            <p>Hover over buttons for information!</p>
-        </div>
+        <header>
+            <div id="infopanel">
+                <p>Hover over buttons for information!</p>
+            </div>
 
-        <div id="log">
+            <div id="tabs">
+                <button id="tab1" onclick="mainTab()" onmouseover="hoverButton = 'tab1'">Main</button>
+                <button id="tab2" onclick="upgradeTab()" onmouseover="hoverButton = 'tab2'">Upgrades</button>
+                <button id="tab3" onclick="aboutTab()" onmouseover="hoverButton = 'tab3'">About</button>
+                <button id="tab4" onclick="optionsTab()" onmouseover="hoverButton = 'tab4'">Options</button>
+                <button id="tab5" onclick="researchTab()" onmouseover="hoverButton = 'tab5'" style="visibility: hidden;">Research</button>
 
-        </div>
-
-
-        <div id="tabs">
-            <button id="tab1" onclick="mainTab()" onmouseover="hoverButton = 'tab1'">Main</button>
-            <button id="tab2" onclick="upgradeTab()" onmouseover="hoverButton = 'tab2'">Upgrades</button>
-            <button id="tab3" onclick="aboutTab()" onmouseover="hoverButton = 'tab3'">About</button>
-            <button id="tab4" onclick="optionsTab()" onmouseover="hoverButton = 'tab4'">Options</button>
-            <button id="tab5" onclick="researchTab()" onmouseover="hoverButton = 'tab5'" style="visibility: hidden;">Research</button>
-
-        </div>
-
+            </div>
+        </header>
+        
         <div id="display">e</div>
 
         <div id="maintab" style="visibility: hidden;">
@@ -102,7 +99,7 @@
 
             <br>
 
-            <div>
+            <div class="triangleDisplay">
                 Triangles: <span id="triangleDisplay">0</span>
                 ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
             </div>
@@ -110,7 +107,7 @@
             <br>
 
             <div>
-                <button id="clickAmountUpgrade" onclick="clickAmountUpgrade.buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
+                <button class="upgrade" id="clickAmountUpgrade" onclick="clickAmountUpgrade.buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
                     Click Power<hr>
                     Cost: <span id="clickAmountUpgradeCostDisplay">0</span><hr>
                     Current: <span id="clickAmountUpgradeAmountDisplay">0</span>
@@ -120,13 +117,13 @@
             <br>
 
             <div>
-                <button id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'">
+                <button class="upgrade" id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'">
                     Autoclicker Interval<hr>
                     Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
                 </button>
                 
-                <button id="autoclickerCostScalingUpgrade" onclick="autoclickerCostScalingUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
+                <button class="upgrade" id="autoclickerCostScalingUpgrade" onclick="autoclickerCostScalingUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
                     Autoclicker Cost Scaling<hr>
                     Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
                     Current: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
@@ -136,7 +133,7 @@
             <br>
 
             <div>
-                <button id="drawerProductionUpgrade" onclick="drawerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
+                <button class="upgrade" id="drawerProductionUpgrade" onclick="drawerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
                     Drawer Production<hr>
                     Cost: <span id="drawerProductionUpgradeCostDisplay">0</span><hr>
                     Current: <span id="drawerProductionUpgradeAmountDisplay">0</span>
@@ -146,7 +143,7 @@
             <br>
 
             <div>
-                <button id="printerProductionUpgrade" onclick="printerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'printerProductionUpgrade'">
+                <button class="upgrade" id="printerProductionUpgrade" onclick="printerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'printerProductionUpgrade'">
                     Printer Production<hr>
                     Cost: <span id="printerProductionUpgradeCostDisplay">0</span><hr>
                     Current: <span id="printerProductionUpgradeAmountDisplay">0</span>
@@ -190,17 +187,25 @@
             <p>
                 <button id="respec" onclick="respecResearch()" onmouseover="hoverButton = 'respec'">Respec research</button>
             </p>
-            <div id="researchArea">
+
+            <div id="researchAreaWrapper">
+                <canvas id="canvas" width="100%" height="100%">display required researches</canvas>
+            
+                <div id="researchArea">
                 
-                <button id="_1_1" onclick="_1_1.buy()" onmouseover=""></button>
 
 
 
+                </div>
             </div>
 
         </div>
 
+        <footer>
+            <div id="log">
 
+            </div>
+        </footer>
 
 
 

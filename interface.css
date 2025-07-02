@@ -1,14 +1,29 @@
 body 
 {
-    background-color: antiquewhite;
+    background-color:darkslateblue;
+    color: aquamarine;
+    overflow-y: clip;
+    padding: 0px;
 }
+
+header
+{
+    overflow-y: scroll;
+    height: 15%;
+    width: 100%;
+    position: fixed;
+    scrollbar-width: none;}
+
 #infopanel
 {
     border-width: thick;
     border-radius: 5px;
-    background-color: aquamarine;
+    background-color:cornflowerblue;
     text-align: center;
+    margin-right: 5%;
+    margin-left: 5%;
     padding: 3px;
+    width: 85%;
 }
 
 #tabs
@@ -20,7 +35,17 @@ body
 {
     width: 200px;
     height: 50px;
-    border-radius: 10px;
+    border-radius: 20px;
+}
+
+#display 
+{
+    overflow-y: scroll;
+    height: 85%;
+    width: 100%;
+    position: fixed;
+    top: 15%;
+    scrollbar-width: none;
 }
 
 .triangleDisplay
@@ -36,12 +61,31 @@ body
 {
     height: 50px;
     width: 100px;
-    border-radius: 10px;
 }
 
 .buyable
 {
 padding-left: 50px;
+}
+
+.buyable button {
+    height: 25px;
+}
+
+.upgrade
+{
+    height: 200px;
+    width: 300px;
+}
+
+
+
+
+
+button
+{
+    border-radius: 10px;
+    background-color: cyan;
 }
 
 button:hover  
@@ -61,3 +105,30 @@ button:hover
     text-shadow: lightgray 3px 3px 3px;
     font-size: 25px;
 }
+
+#researchAreaWrapper
+{
+    text-align: center;
+    overflow-y: scroll;
+    height: 60%;
+    width: 100%;
+    position: fixed;
+    top: 40%;
+    scrollbar-width: none;
+}
+#researchArea {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 0%;
+    margin: 0%;
+    height: 100%;
+}
+#researchArea button {
+    height: 20%;
+    width: 10%;
+    position: absolute;
+}
+
+
+

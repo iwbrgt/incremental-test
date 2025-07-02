@@ -180,7 +180,7 @@
 
     class Research {
 
-        constructor(name, row, column, required, cost, bought, description) {
+        constructor(name, row, column, required, cost, bought, description, xpos, ypos) {
             this.name = name;
             this.row = row;
             this.column = column;
@@ -188,6 +188,8 @@
             this.cost = cost;
             this.bought = bought;
             this.description = description;
+            this.xpos = xpos;
+            this.ypos = ypos;
         }
 
         buy() {
@@ -210,25 +212,31 @@
                 'n/a', 
                 2, 
                 false,
-                "Give your drawers and mathematicians tools, doubling their production"
+                "Give your drawers and mathematicians tools, doubling their production.",
+                0,
+                0
             );
             var _2_1 = new Research(
                 "_2_1", 
                 2, 
                 1, 
                 _1_1, 
-                2, 
+                3, 
                 false,
-                "Invent more specialized tools for your mathematicians, multiplying their production by 4"
+                "Invent more specialized tools for your mathematicians, multiplying their production by 4.",
+                0,
+                0
             );
             var _2_2 = new Research(
                 "_2_2", 
                 2,
                 2,
                 _1_1,
-                2, 
+                3, 
                 false,
-                "Invent more specialized tools for drawers, multiplying their production by 4" 
+                "Invent more specialized tools for drawers, multiplying their production by 4.",
+                0,
+                0
             );
         
     var researches = [
@@ -245,20 +253,72 @@
         for (var i of researches) {
             
             if (i.row > row) {
-                contents = contents + "<hr>";
+                contents = contents + "<br>";
             }
             row = i.row;
-            contents = contents + "<button id=\"" + i.name + "\" onmouseover=\"hoverButton = \'" + i.name +"\'\" onclick=\"" + i.name + ".buy()\">";
+            contents = contents + "<button class=\"research\" id=\"" + i.name + "\" onmouseover=\"hoverButton = \'" + i.name +"\'\" onclick=\"" + i.name + ".buy()\">";
             
             contents = contents + "Buy research " + i.name + "</button>";
-            
 
         }
 
+
         document.getElementById("researchArea").innerHTML = contents;
 
+        var totalColumns = 0;
+        row = 1;
+
+
+
+        const buttonWidth = 10;
+        const buttonHeight = 20;
+
+
+        for (var i of researches) {
+            var margin = 0;
+            document.getElementById(i.name).style.top = (((i.row - 1) * 40) + 0) + "%";
+            i.ypos = (((i.row - 1) * 40) + 0) + buttonHeight / 2;
+            if (i.row > row) {
+                margin = (100 - (totalColumns * buttonWidth)) / (totalColumns + 1);
+                for (var j of researches) {
+                    if (j.row == (row)) {
+                        document.getElementById(j.name).style.left = margin + (j.column - 1) * (margin + buttonWidth) + "%";
+                        j.xpos = margin + (j.column - 1) * (margin + buttonWidth) + buttonWidth / 2;
+                    }
+                }
+                totalColumns = 0;
+            }
+            row = i.row;
+            totalColumns++;
+        }
+
+        margin = (100 - (totalColumns * 10)) / (totalColumns + 1);
+        for (var j of researches) {
+            if (j.row == (row)) {
+                document.getElementById(j.name).style.left = margin + (j.column - 1) * (margin + buttonWidth) + "%";
+                j.xpos = margin + (j.column - 1) * (margin + buttonWidth) + (buttonWidth / 2);
+
+            }
+        }
+
+        var canvas = document.getElementById("canvas");
+        canvas.width = document.getElementById("researchAreaWrapper").getBoundingClientRect().width;
+        canvas.height = document.getElementById("researchAreaWrapper").getBoundingClientRect().height;
+        const ctx = canvas.getContext("2d");
+        var width = canvas.getBoundingClientRect().width;
+        var height = canvas.getBoundingClientRect().height;
+        ctx.strokeStyle = "white";
+        for (var k of researches) {
+            if (k.required !== "n/a") {
+                ctx.beginPath();
+                ctx.moveTo((k.required.xpos * width / 100), (k.required.ypos * height / 100));
+                ctx.lineTo((k.xpos * width / 100), (k.ypos * height / 100));
+                ctx.stroke();
+            }
+        }
+
     } 
-        displayResearches();
+    displayResearches();
 
 
 
@@ -300,6 +360,7 @@
     function researchTab() {
         tab = 4;
         display();
+        displayResearches();
     }
 
     function display() {
@@ -371,7 +432,7 @@
 
         for (var i of researches) {
 
-            allInfoboxContent.set(i.name, i.description);
+            allInfoboxContent.set(i.name, i.description + " Costs: " + i.cost + " research");
 
         }
 
@@ -453,14 +514,16 @@
             researchTemp += -1 * mathematician.production / 20 * mathematician.amount;
         }
 
-        if (researchTemp >= researchThreshhold) {
-            research++;
-            researchThreshhold = 10 * (researchScaling ** totalResearch); 
-        }
-
         totalResearch = Math.trunc(Math.log(researchTemp) / Math.log(researchScaling));
         if (research > totalResearch) {
             research = totalResearch;
+        }
+
+        research = totalResearch;
+        for (var i of researches) {
+            if (i.bought) {
+                research -= i.cost;
+            }
         }
 
         researchThreshhold = 10 * (researchScaling ** totalResearch);
@@ -549,7 +612,7 @@
         document.getElementById("clickAmountUpgradeAmountDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
         document.getElementById("autoclickerIntervalUpgradeAmountDisplay").innerHTML = round(autoclicker.interval, 3);
         document.getElementById("autoclickerCostScalingUpgradeAmountDisplay").innerHTML = round(autoclicker.costScaling, 3);
-        document.getElementById("drawerProductionUpgradeAmountDisplay").innerHTML = round(drawerProductionUpgrade.amount + 1, 3);
+        document.getElementById("drawerProductionUpgradeAmountDisplay").innerHTML = round(drawer.production, 3);
         document.getElementById("printerProductionUpgradeAmountDisplay").innerHTML = round(printer.production, 3);
 
         autoclicker.displayNumbers("autoclicker");
@@ -581,6 +644,16 @@
             document.getElementById("mathematicianEnable").innerHTML = 'on';
         } else {
             document.getElementById("mathematicianEnable").innerHTML = 'off';
+        }
+
+        for (i of researches) {
+            if (i.bought) {
+                document.getElementById(i.name).style.backgroundColor = "green";
+                document.getElementById(i.name).inert = true;
+            } else {
+                document.getElementById(i.name).style.backgroundColor = "cyan";
+                document.getElementById(i.name).inert = false;
+            }
         }
 
     }
