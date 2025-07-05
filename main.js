@@ -24,6 +24,10 @@
     var researchThreshhold = 10;
 
 
+
+
+
+
     class Buyable {
 
         constructor(name, amount, cost, costScaling, production) {
@@ -55,7 +59,7 @@
 
     const baseBuyableCosts = [10, 500, 5000, 20000];
 
-    const baseBuyableCostScaling = [2, 1.8, 2, 2.25];
+    const baseBuyableCostScaling = [1.8, 1.8, 1.8, 1.8];
 
     const baseBuyableProduction = [1000, 2, 8, -50];
 
@@ -95,6 +99,12 @@
     ); //produces research instead of triangles 
     mathematician.enabled = true;
     mathematician.researchProduction = 1;
+
+
+
+
+
+
 
 
     class Upgrade {
@@ -178,15 +188,26 @@
     );
 
 
+
+
+
+
+
+
+
+
+
+
     class Research {
 
-        constructor(name, row, column, required, cost, bought, description, xpos, ypos) {
+        constructor(name, row, column, required, cost, bought, shortDesc, description, xpos, ypos) {
             this.name = name;
             this.row = row;
             this.column = column;
             this.required = required;
             this.cost = cost;
             this.bought = bought;
+            this.shortDesc = shortDesc;
             this.description = description;
             this.xpos = xpos;
             this.ypos = ypos;
@@ -212,6 +233,7 @@
                 'n/a', 
                 2, 
                 false,
+                "Tools",
                 "Give your drawers and mathematicians tools, doubling their production.",
                 0,
                 0
@@ -223,6 +245,7 @@
                 _1_1, 
                 3, 
                 false,
+                "Mathematician Tools",
                 "Invent more specialized tools for your mathematicians, multiplying their production by 4.",
                 0,
                 0
@@ -234,15 +257,82 @@
                 _1_1,
                 3, 
                 false,
+                "Drawing Tools",
                 "Invent more specialized tools for drawers, multiplying their production by 4.",
                 0,
                 0
             );
+            var _3_1 = new Research(
+                "_3_1",
+                3,
+                1,
+                _2_1,
+                3,
+                false,
+                "Mathematical Efficiency",
+                "Better motivate your mathematicians, multiplying their production by 10.",
+                0,
+                0
+            );
+            var _3_2 = new Research(
+                "_3_2",
+                3,
+                2,
+                _2_1,
+                3,
+                false,
+                "Mathematical Cooperation",
+                "Have your mathematicians cooperate better, making each one bought boost their production by 20%.",
+                0,
+                0
+            );
+            var _3_3 = new Research(
+                "_3_3",
+                3,
+                3,
+                _2_2,
+                3,
+                false,
+                "Drawing Efficiency",
+                "Ensure you hire more capable drawers, multiplying their production by 5.",
+                0,
+                0
+            );
+            var _3_4 = new Research(
+                "_3_4",
+                3,
+                4,
+                _2_2,
+                3,
+                false,
+                "Drawing Cooperation",
+                "Have your drawers cooperate better, making each one bought boost their production by 10%.",
+                0,
+                0
+            );
+            var _3_5 = new Research(
+                "_3_5",
+                3,
+                5,
+                _2_2,
+                4,
+                false,
+                "Improved packing",
+                "Improve how triangles are arranged on the sheets printed by printers, multiplying printer production by 3.",
+                0,
+                0
+            );
+
         
     var researches = [
         _1_1,
         _2_1,
         _2_2,
+        _3_1,
+        _3_2,
+        _3_3,
+        _3_4,
+        _3_5,
 
     ];
 
@@ -258,7 +348,7 @@
             row = i.row;
             contents = contents + "<button class=\"research\" id=\"" + i.name + "\" onmouseover=\"hoverButton = \'" + i.name +"\'\" onclick=\"" + i.name + ".buy()\">";
             
-            contents = contents + "Buy research " + i.name + "</button>";
+            contents = contents + "Buy research: " + i.shortDesc + "</button>";
 
         }
 
@@ -318,8 +408,11 @@
         }
 
     } 
+
+
     displayResearches();
 
+    window.onresize = displayResearches;
 
 
     function respecResearch() {
@@ -336,6 +429,64 @@
     }
 
 
+    var achievementPoints = 0;
+
+    class Achievement {
+        constructor(name, row, column, have, description, reward) {
+            this.name = name;
+            this.row = row;
+            this.column = column;
+            this.have = have;
+            this.description = description;
+            this.reward = reward;
+        }
+    }
+
+    var achievementNames = [
+        "A start",
+        "First autoclicker",
+        "Upgrade", 
+        "Another producer?",
+        "Mass Production",
+        "Oh no, math",
+        "Choices",
+        "Negative Production",
+        "Respec",
+        "Upgraded",
+    ];
+    var achievementDescriptions = [
+        "Get a triangle",
+        "Buy an autoclicker",
+        "Buy an upgrade",
+        "Buy a drawer",
+        "Buy a printer",
+        "Buy a mathematician",
+        "Buy a research",
+        "Have a negative value for triangles per second",
+        "Respec research",
+        "Max out an upgrade",
+    ];
+    var achievementRewards = [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        1,
+        3,
+        1,
+        4,
+    ];
+
+    function displayAchievements() {
+
+    }
+
+
+
+
+
 
     function mainTab() {
         tab = 0;
@@ -346,19 +497,24 @@
         tab = 1;
         display();
     }
-
-    function aboutTab() {
+    
+    function achievementsTab() {
         tab = 2;
         display();
     }
 
-    function optionsTab() {
+    function aboutTab() {
         tab = 3;
         display();
     }
 
-    function researchTab() {
+    function optionsTab() {
         tab = 4;
+        display();
+    }
+
+    function researchTab() {
+        tab = 5;
         display();
         displayResearches();
     }
@@ -373,12 +529,15 @@
                 document.getElementById("display").innerHTML = document.getElementById("upgradetab").innerHTML;
                 break;
             case 2:
-                document.getElementById("display").innerHTML = document.getElementById("abouttab").innerHTML;
+                document.getElementById("display").innerHTML = document.getElementById("achievementstab").innerHTML;
                 break;
             case 3:
-                document.getElementById("display").innerHTML = document.getElementById("optionstab").innerHTML;
+                document.getElementById("display").innerHTML = document.getElementById("abouttab").innerHTML;
                 break;
             case 4:
+                document.getElementById("display").innerHTML = document.getElementById("optionstab").innerHTML;
+                break;
+            case 5:
                 document.getElementById("display").innerHTML = document.getElementById("researchtab").innerHTML;
                 break;            
 
@@ -386,6 +545,11 @@
     }
 
     display();
+
+
+
+
+
 
     function triangleClick(amount) {
         triangles += amount * trianglesPerClick;
@@ -408,9 +572,10 @@
         
         allInfoboxContent.set('tab1', "main tab");
         allInfoboxContent.set('tab2', "upgrades tab");
-        allInfoboxContent.set('tab3', "about tab");
-        allInfoboxContent.set('tab4', "option tab");
-        allInfoboxContent.set('tab5', "research tab");
+        allInfoboxContent.set('tab3', "achievements tab");
+        allInfoboxContent.set('tab4', "about tab");
+        allInfoboxContent.set('tab5', "option tab");
+        allInfoboxContent.set('tab6', "research tab");
         
         allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, each automatically clicks the button every " + autoclicker.interval + " milliseconds");
         allInfoboxContent.set('drawerBuy', "Buy a drawer, each draws " + drawer.production + " triangles per second.");
@@ -484,11 +649,14 @@
         drawer.production = baseBuyableProduction[1] + drawerProductionUpgrade.amount;
         drawer.production = drawer.production * (1 + _1_1.bought);
         drawer.production = drawer.production * (1 + 3 * _2_2.bought);
+        drawer.production = drawer.production * (1 + 4 * _3_3.bought);
+        drawer.production = drawer.production * (1 + ((1.1 ** drawer.amount) - 1) * _3_4.bought);
         
         //printer.amount
         printer.costScaling = baseBuyableCostScaling[2];
         printer.cost = baseBuyableCosts[2] * (printer.costScaling ** printer.amount);
         printer.production = baseBuyableProduction[2] * (1.2 ** printerProductionUpgrade.amount);
+        printer.production = printer.production * (1 + 2 * _3_5.bought);
 
         //mathematician.amount
         mathematician.costScaling = baseBuyableCostScaling[3];
@@ -496,6 +664,8 @@
         mathematician.production = baseBuyableProduction[3];
         mathematician.production = mathematician.production * (1 + _1_1.bought);
         mathematician.production = mathematician.production * (1 + 3 * _2_1.bought);
+        mathematician.production = mathematician.production * (1 + 9 * _3_1.bought);
+        mathematician.production = mathematician.production * (1 + ((1.2 ** mathematician.amount) - 1) * _3_2.bought);
 
         trianglesPerSecond = printer.amount * printer.production;
         trianglesPerSecond += drawer.amount * drawer.production;
@@ -606,7 +776,8 @@
         document.getElementById("researchTempDisplay").innerHTML = round(researchTemp, 2);
         document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold, 2);
         
-        
+        document.getElementById("achievementPointDisplay").innerHTML = round(achievementPoints, 1);
+        document.getElementById("achievementPointBonusDisplay").innerHTML = round((achievementPoints / 100), 2);
         
         
         document.getElementById("clickAmountUpgradeAmountDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
@@ -649,10 +820,8 @@
         for (i of researches) {
             if (i.bought) {
                 document.getElementById(i.name).style.backgroundColor = "green";
-                document.getElementById(i.name).inert = true;
             } else {
                 document.getElementById(i.name).style.backgroundColor = "cyan";
-                document.getElementById(i.name).inert = false;
             }
         }
 
@@ -755,6 +924,7 @@
             tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
             tmpSave.upgrades[4].amount = printerProductionUpgrade.amount;
             
+            tmpSave.researches = [""];
             for (var i of researches) {
                 if (i.bought) {
                     tmpSave.researches.push(i.name);

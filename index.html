@@ -19,9 +19,10 @@
             <div id="tabs">
                 <button id="tab1" onclick="mainTab()" onmouseover="hoverButton = 'tab1'">Main</button>
                 <button id="tab2" onclick="upgradeTab()" onmouseover="hoverButton = 'tab2'">Upgrades</button>
-                <button id="tab3" onclick="aboutTab()" onmouseover="hoverButton = 'tab3'">About</button>
-                <button id="tab4" onclick="optionsTab()" onmouseover="hoverButton = 'tab4'">Options</button>
-                <button id="tab5" onclick="researchTab()" onmouseover="hoverButton = 'tab5'" style="visibility: hidden;">Research</button>
+                <button id="tab3" onclick="achievementsTab()" onmouseover="hoverButton = 'tab3'">Achievements</button>
+                <button id="tab4" onclick="aboutTab()" onmouseover="hoverButton = 'tab4'">About</button>
+                <button id="tab5" onclick="optionsTab()" onmouseover="hoverButton = 'tab5'">Options</button>
+                <button id="tab6" onclick="researchTab()" onmouseover="hoverButton = 'tab6'" style="visibility: hidden;">Research</button>
 
             </div>
         </header>
@@ -152,8 +153,17 @@
 
         </div>
 
-        <div id="abouttab" style="visibility: hidden;">
+        <div id="achievementstab" style="visibility: hidden;">
+            <p>
+                You have <span id="achievementPointDisplay">0</span> acheivement points (AP)
+                <br>
+                Each achievement point gives a 1% additive increase to triangle gain (current: <span id="achievementPointBonusDisplay">0</span>)
+            </p>
 
+        </div>
+
+        <div id="abouttab" style="visibility: hidden;">
+            Made by iwbrgt
         </div>
 
         <div id="optionstab" style="visibility: hidden;">
