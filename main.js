@@ -48,10 +48,10 @@
             }
         }
 
-        displayNumbers(upgradeName) {
+        displayNumbers() {
             
-            document.getElementById(upgradeName + "Display").innerHTML = round(this.amount, 2);
-            document.getElementById(upgradeName + "CostDisplay").innerHTML = round(this.cost, 2);
+            document.getElementById(this.name + "Display").innerHTML = round(this.amount, 2);
+            document.getElementById(this.name + "CostDisplay").innerHTML = round(this.cost, 2);
 
         }
 
@@ -127,8 +127,16 @@
             }
         }
 
-        displayNumbers(upgradeName) {
-            document.getElementById(upgradeName + "CostDisplay").innerHTML = round(this.cost, 2);
+        displayNumbers() {
+           
+            document.getElementById(this.name + "CostDisplay").innerHTML = round(this.cost, 2);
+          
+            if (this.max < 0) {
+                document.getElementById(this.name + "AmountDisplay").innerHTML = round(this.amount, 2);
+            } else {
+                document.getElementById(this.name + "AmountDisplay").innerHTML = round(this.amount, 2) + "/" + round(this.max, 2);
+            }
+          
             if (this.amount >= this.max && this.max != -1) {
                 document.getElementById(this.name).setAttribute("disabled", "");
             }
@@ -180,7 +188,7 @@
     
     
     var printerProductionUpgrade = new Upgrade(
-        "drawerProductionUpgrade", 
+        "printerProductionUpgrade", 
         0, 
         baseUpgradeCosts[4], 
         baseUpgradeCostScaling[4], 
@@ -719,6 +727,7 @@
             if (typeof obj.buyables[1].amount !== "undefined") drawer.amount = obj.buyables[1].amount;
             if (typeof obj.buyables[2].amount !== "undefined") printer.amount = obj.buyables[2].amount;
             if (typeof obj.buyables[3].amount !== "undefined") mathematician.amount = obj.buyables[3].amount;
+            if (typeof obj.buyables[3].enabled !== "undefined") mathematician.enabled = obj.buyables[3].enabled;
 
             if (typeof obj.upgrades[0].amount !== "undefined") clickAmountUpgrade.amount = obj.upgrades[0].amount;
             if (typeof obj.upgrades[1].amount !== "undefined") autoclickerIntervalUpgrade.amount = obj.upgrades[1].amount;
@@ -780,24 +789,24 @@
         document.getElementById("achievementPointBonusDisplay").innerHTML = round((achievementPoints / 100), 2);
         
         
-        document.getElementById("clickAmountUpgradeAmountDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
-        document.getElementById("autoclickerIntervalUpgradeAmountDisplay").innerHTML = round(autoclicker.interval, 3);
-        document.getElementById("autoclickerCostScalingUpgradeAmountDisplay").innerHTML = round(autoclicker.costScaling, 3);
-        document.getElementById("drawerProductionUpgradeAmountDisplay").innerHTML = round(drawer.production, 3);
-        document.getElementById("printerProductionUpgradeAmountDisplay").innerHTML = round(printer.production, 3);
+        document.getElementById("clickAmountUpgradeEffectDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
+        document.getElementById("autoclickerIntervalUpgradeEffectDisplay").innerHTML = round(autoclicker.interval, 3);
+        document.getElementById("autoclickerCostScalingUpgradeEffectDisplay").innerHTML = round(autoclicker.costScaling, 3);
+        document.getElementById("drawerProductionUpgradeEffectDisplay").innerHTML = round(drawer.production, 3);
+        document.getElementById("printerProductionUpgradeEffectDisplay").innerHTML = round(printer.production, 3);
 
-        autoclicker.displayNumbers("autoclicker");
-        drawer.displayNumbers("drawer");
-        printer.displayNumbers("printer");
-        mathematician.displayNumbers("mathematician");
+        autoclicker.displayNumbers();
+        drawer.displayNumbers();
+        printer.displayNumbers();
+        mathematician.displayNumbers();
 
 
 
-        clickAmountUpgrade.displayNumbers("clickAmountUpgrade");
-        autoclickerIntervalUpgrade.displayNumbers("autoclickerIntervalUpgrade");
-        autoclickerCostScalingUpgrade.displayNumbers("autoclickerCostScalingUpgrade");
-        drawerProductionUpgrade.displayNumbers("drawerProductionUpgrade");
-        printerProductionUpgrade.displayNumbers("printerProductionUpgrade");
+        clickAmountUpgrade.displayNumbers();
+        autoclickerIntervalUpgrade.displayNumbers();
+        autoclickerCostScalingUpgrade.displayNumbers();
+        drawerProductionUpgrade.displayNumbers();
+        printerProductionUpgrade.displayNumbers();
 
 
 
@@ -809,7 +818,7 @@
         updateInfoboxContent();
         document.getElementById("infopanel").innerHTML = "<p>" + infoboxContent + "</p>";
         if (mathematician.amount > 0) {
-            document.getElementById("tab5").style.visibility = 'visible';
+            document.getElementById("tab6").style.visibility = 'visible';
         }
         if (mathematician.enabled) {
             document.getElementById("mathematicianEnable").innerHTML = 'on';
@@ -856,6 +865,7 @@
             {
                 name: "mathematician",
                 amount: 0,
+                enabled: false,
                 
             }
         ],
@@ -917,6 +927,8 @@
             tmpSave.buyables[2].amount = printer.amount;
             
             tmpSave.buyables[3].amount = mathematician.amount;
+            tmpSave.buyables[3].enabled = mathematician.enabled;
+
             
             tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
             tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
