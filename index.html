@@ -3,7 +3,7 @@
     
     <head>
         <title>
-            incremental test
+            incremental test v0.1.0
         </title>
         
         <link rel="stylesheet" type="text/css" href="interface.css">
@@ -23,197 +23,225 @@
                 <button id="tab4" onclick="aboutTab()" onmouseover="hoverButton = 'tab4'">About</button>
                 <button id="tab5" onclick="optionsTab()" onmouseover="hoverButton = 'tab5'">Options</button>
                 <button id="tab6" onclick="researchTab()" onmouseover="hoverButton = 'tab6'" style="visibility: hidden;">Research</button>
+            </div>
+            <div id="subtabs">
 
             </div>
+       
+       
         </header>
         
         <div id="display">e</div>
 
         <div id="maintab" style="visibility: hidden;">
+            <div id="MainTabContent">
+                <div id="producers">
+                    <p class="triangleDisplay">
+                        Triangles: <span id="triangleDisplay">0</span>
+                        ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
+                    </p>
+                    
+                    <div class="button1">
+                        <button id="button1" onclick="triangleClick(1)" onmouseover="hoverButton = 'button1'">click</button>
+                    </div>
 
-            <div id="producers">
-                <p class="triangleDisplay">
-                    Triangles: <span id="triangleDisplay">0</span>
-                    ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
-                </p>
-                
-                <div class="button1">
-                    <button id="button1" onclick="triangleClick(1)" onmouseover="hoverButton = 'button1'">click</button>
-                </div>
+                    <p class="buildingCatagories">
+                        Producers:
+                    </p>
+                    
+                    <div class="buyable">
+                        <p>
+                            Autoclickers: <span id="autoclickerDisplay">0</span>
+                        </p>
+                    
+                        <button id="autoclickerBuy" onclick="autoclicker.buy(1)" onmouseover="hoverButton = 'autoclickerBuy'">
+                            Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
+                        </button>
+                    </div>
 
-                <p class="buildingCatagories">
-                    Producers:
-                </p>
-                
-                <div class="buyable">
+                    <div class="buyable">
+                        <p>
+                            Drawers: <span id="drawerDisplay">0</span>
+                        </p>
+                    
+                        <button id="drawerBuy" onclick="drawer.buy(1)" onmouseover="hoverButton = 'drawerBuy'">
+                            Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
+                        </button>
+                    </div>
+                    
+                    <div class="buyable">
                     <p>
-                        Autoclickers: <span id="autoclickerDisplay">0</span>
+                        Printers: <span id="printerDisplay">0</span>
                     </p>
                 
-                    <button id="autoclickerBuy" onclick="autoclicker.buy(1)" onmouseover="hoverButton = 'autoclickerBuy'">
-                        Buy autoclicker for <span id="autoclickerCostDisplay">0</span> triangles
+                    <button id="printerBuy" onclick="printer.buy(1)" onmouseover="hoverButton = 'printerBuy'">
+                        Buy a printer for <span id="printerCostDisplay">0</span> triangles
                     </button>
+                    </div>
                 </div>
 
-                <div class="buyable">
-                    <p>
-                        Drawers: <span id="drawerDisplay">0</span>
+                <div id="research">
+                
+                    <p class="buildingCatagories">
+                        Researchers:
                     </p>
                 
-                    <button id="drawerBuy" onclick="drawer.buy(1)" onmouseover="hoverButton = 'drawerBuy'">
-                        Buy a drawer for <span id="drawerCostDisplay">0</span> triangles
-                    </button>
-                </div>
-                
-                <div class="buyable">
-                <p>
-                    Printers: <span id="printerDisplay">0</span>
-                </p>
+                    <div class="buyable">
+                        <p>
+                            Mathematicians: <span id="mathematicianDisplay">0</span>
+                            <button id="mathematicianEnable" onclick="toggleMathematician()" onmouseover="hoverButton = 'mathematicianEnable'">on</button>
+                        </p>
+                    
+                        <button id="mathematicianBuy" onclick="mathematician.buy(1)" onmouseover="hoverButton = 'mathematicianBuy'">
+                            Buy a mathematician for <span id="mathematicianCostDisplay">0</span> triangles
+                        </button>
             
-                <button id="printerBuy" onclick="printer.buy(1)" onmouseover="hoverButton = 'printerBuy'">
-                    Buy a printer for <span id="printerCostDisplay">0</span> triangles
-                </button>
+                    </div>
                 </div>
-            </div>
-
-            <div id="research">
-               
-                <p class="buildingCatagories">
-                    Researchers:
-                </p>
-               
-                <div class="buyable">
-                    <p>
-                        Mathematicians: <span id="mathematicianDisplay">0</span>
-                        <button id="mathematicianEnable" onclick="toggleMathematician()" onmouseover="hoverButton = 'mathematicianEnable'">on</button>
-                    </p>
-                
-                    <button id="mathematicianBuy" onclick="mathematician.buy(1)" onmouseover="hoverButton = 'mathematicianBuy'">
-                        Buy a mathematician for <span id="mathematicianCostDisplay">0</span> triangles
-                    </button>
-           
-                </div>
+        
             </div>
         </div>
 
         <div id="upgradetab" style="visibility: hidden;">
 
-            <br>
+            <div id="Triangle UpgradesTabContent">
+                <br>
 
-            <div class="triangleDisplay">
-                Triangles: <span id="triangleDisplay">0</span>
-                ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
-            </div>
+                <div class="triangleDisplay">
+                    Triangles: <span id="triangleDisplay">0</span>
+                    ------- Currently gaining <span id="trianglesPerSecond">0</span> per second
+                </div>
 
-            <br>
+                <br>
 
-            <div>
-                <button class="upgrade" id="clickAmountUpgrade" onclick="clickAmountUpgrade.buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
-                    Click Power<hr>
-                    Cost: <span id="clickAmountUpgradeCostDisplay">0</span><hr>
-                    Current: <span id="clickAmountUpgradeEffectDisplay">0</span><hr>
-                    Currently have: <span id="clickAmountUpgradeAmountDisplay">0</span>
-                </button>
-            </div>
-            
-            <br>
-
-            <div>
-                <button class="upgrade" id="autoclickerIntervalUpgrade" onclick="autoclickerIntervalUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'">
-                    Autoclicker Interval<hr>
-                    Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
-                    Current: <span id="autoclickerIntervalUpgradeEffectDisplay">0</span><hr>
-                    Currently have: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
-                </button>
+                <div>
+                    <button class="upgrade" id="clickAmountUpgrade" onclick="upgrades[0].buy(1)" onmouseover="hoverButton = 'clickAmountUpgrade'">
+                        Click Power<hr>
+                        Cost: <span id="clickAmountUpgradeCostDisplay">0</span><hr>
+                        Current: <span id="clickAmountUpgradeEffectDisplay">0</span><hr>
+                        Currently have: <span id="clickAmountUpgradeAmountDisplay">0</span>
+                    </button>
+                </div>
                 
-                <button class="upgrade" id="autoclickerCostScalingUpgrade" onclick="autoclickerCostScalingUpgrade.buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
-                    Autoclicker Cost Scaling<hr>
-                    Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
-                    Current: <span id="autoclickerCostScalingUpgradeEffectDisplay">0</span><hr>
-                    Currently have: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
-                </button>
+                <br>
+
+                <div>
+                    <button class="upgrade" id="autoclickerIntervalUpgrade" onclick="upgrades[1].buy(1)" onmouseover="hoverButton = 'autoclickerIntervalUpgrade'">
+                        Autoclicker Interval<hr>
+                        Cost: <span id="autoclickerIntervalUpgradeCostDisplay">0</span><hr>
+                        Current: <span id="autoclickerIntervalUpgradeEffectDisplay">0</span><hr>
+                        Currently have: <span id="autoclickerIntervalUpgradeAmountDisplay">0</span>
+                    </button>
+                    
+                    <button class="upgrade" id="autoclickerCostScalingUpgrade" onclick="upgrades[2].buy(1)" onmouseover="hoverButton = 'autoclickerCostScalingUpgrade'">
+                        Autoclicker Cost Scaling<hr>
+                        Cost: <span id="autoclickerCostScalingUpgradeCostDisplay">0</span><hr>
+                        Current: <span id="autoclickerCostScalingUpgradeEffectDisplay">0</span><hr>
+                        Currently have: <span id="autoclickerCostScalingUpgradeAmountDisplay">0</span>
+                    </button>
+                </div>
+
+                <br>
+
+                <div>
+                    <button class="upgrade" id="drawerProductionUpgrade" onclick="upgrades[3].buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
+                        Drawer Production<hr>
+                        Cost: <span id="drawerProductionUpgradeCostDisplay">0</span><hr>
+                        Current: <span id="drawerProductionUpgradeEffectDisplay">0</span><hr>
+                        Currently have: <span id="drawerProductionUpgradeAmountDisplay">0</span>
+                    </button>
+                </div>
+
+                <br>
+
+                <div>
+                    <button class="upgrade" id="printerProductionUpgrade" onclick="upgrades[4].buy(1)" onmouseover="hoverButton = 'printerProductionUpgrade'">
+                        Printer Production<hr>
+                        Cost: <span id="printerProductionUpgradeCostDisplay">0</span><hr>
+                        Current: <span id="printerProductionUpgradeEffectDisplay">0</span><hr>
+                        Currently have: <span id="printerProductionUpgradeAmountDisplay">0</span>
+                    </button>
+                </div>
             </div>
-
-            <br>
-
-            <div>
-                <button class="upgrade" id="drawerProductionUpgrade" onclick="drawerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'drawerProductionUpgrade'">
-                    Drawer Production<hr>
-                    Cost: <span id="drawerProductionUpgradeCostDisplay">0</span><hr>
-                    Current: <span id="drawerProductionUpgradeEffectDisplay">0</span><hr>
-                    Currently have: <span id="drawerProductionUpgradeAmountDisplay">0</span>
-                </button>
-            </div>
-
-            <br>
-
-            <div>
-                <button class="upgrade" id="printerProductionUpgrade" onclick="printerProductionUpgrade.buy(1)" onmouseover="hoverButton = 'printerProductionUpgrade'">
-                    Printer Production<hr>
-                    Cost: <span id="printerProductionUpgradeCostDisplay">0</span><hr>
-                    Current: <span id="printerProductionUpgradeEffectDisplay">0</span><hr>
-                    Currently have: <span id="printerProductionUpgradeAmountDisplay">0</span>
-                </button>
-            </div>
-
         </div>
 
         <div id="achievementstab" style="visibility: hidden;">
-            <p>
-                You have <span id="achievementPointDisplay">0</span> acheivement points (AP)
-                <br>
-                Each achievement point gives a 1% additive increase to triangle gain (current: <span id="achievementPointBonusDisplay">0</span>)
-            </p>
-
+            
+            <div id="AchievementsTabContent"> 
+                <p class="achievText">
+                    You have <span id="achievementPointDisplay">0</span> achievement points (AP)
+                    <br>
+                    Each achievement point gives a 1% additive increase to triangle gain (current: <span id="achievementPointBonusDisplay">0</span>)
+                </p>
+                <div id="achievementArea" class="achievArea">
+                </div>
+            </div>
+            <div id="Secret AchievementsTabContent"> 
+                <p class="achievText">
+                    You have <span id="secretAchievementPointDisplay">0</span> secret achievement points (SAP)
+                    <br>
+                    Each secret achievement point does something :)
+                </p>
+                <div id="achievementArea" class="achievArea">
+                </div>
+            </div>
+        
         </div>
 
         <div id="abouttab" style="visibility: hidden;">
-            Made by iwbrgt
+            <div id="CreditsTabContent">
+                Made by iwbrgt
+            </div>
+
+            <div id="ChangelogTbaContent">
+                e
+            </div>
         </div>
 
         <div id="optionstab" style="visibility: hidden;">
+            <div id="OptionsTabContent">
+                <p>
+                    Next autosave in <span id="autosaveDisplay">0</span> seconds
+                </p>
+                
+                
+                
+                
+                <p>
+                    <button id="deleteSave" onclick="deleteSave()" onmouseover="hoverButton = 'deleteSave'">Delete Save</button>
+                </p>
 
-            <p>
-                Next autosave in <span id="autosaveDisplay">0</span> seconds
-            </p>
-            
-            
-            
-            
-            <p>
-                <button id="deleteSave" onclick="deleteSave()" onmouseover="hoverButton = 'deleteSave'">Delete Save</button>
-            </p>
-
-
+            </div>
 
         </div>
 
         <div id="researchtab" style="visibility: hidden;">
 
-            <p>
-                Research: <span id="researchDisplay">0</span>/<span id="totalResearchDisplay">0</span>
-            </p>
-            <p>
-                Triangles invested into research: <span id="researchTempDisplay">0</span>
-            </p>
-            <p>
-                Triangles to next research: <span id="researchThreshholdDisplay">0</span>
-            </p>
-            <p>
-                <button id="respec" onclick="respecResearch()" onmouseover="hoverButton = 'respec'">Respec research</button>
-            </p>
+            <div id="ResearchTabContent">
+                <p>
+                    Research: <span id="researchDisplay">0</span>/<span id="totalResearchDisplay">0</span>
+                </p>
+                <p>
+                    Triangles invested into research: <span id="researchTempDisplay">0</span>
+                </p>
+                <p>
+                    Triangles to next research: <span id="researchThreshholdDisplay">0</span>
+                </p>
+                <p>
+                    <button id="respec" onclick="respecResearch()" onmouseover="hoverButton = 'respec'">Respec research</button>
+                </p>
 
-            <div id="researchAreaWrapper">
-                <canvas id="canvas" width="100%" height="100%">display required researches</canvas>
-            
-                <div id="researchArea">
+                <div id="researchAreaWrapper">
+                    <canvas id="canvas" width="100%" height="100%">display required researches</canvas>
                 
+                    <div id="researchArea">
+                    
 
 
 
+                    </div>
                 </div>
             </div>
-
         </div>
 
         <footer>

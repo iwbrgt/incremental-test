@@ -4,47 +4,86 @@ body
     color: aquamarine;
     overflow-y: clip;
     padding: 0px;
+    margin: 0%;
+    width: 100%;
 }
 
 header
 {
     overflow-y: scroll;
-    height: 15%;
+    height: 20%;
     width: 100%;
+    margin: 0%;
+    padding: 0%;
+    border: 0%;
     position: fixed;
-    scrollbar-width: none;}
+    scrollbar-width: none;
+}
 
 #infopanel
 {
-    border-width: thick;
+    border-style: solid;
+    border-color: darkblue;
+    border-width: 1%;
     border-radius: 5px;
     background-color:cornflowerblue;
     text-align: center;
     margin-right: 5%;
     margin-left: 5%;
-    padding: 3px;
-    width: 85%;
+    padding-left: 0%;
+    padding-right: 0%;
+    width: 88%;
+    height: 30%;
+
+}
+
+#infopanel p 
+{
+    position: relative;
+    top: 30%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    margin-top: 0%;
+    margin-bottom: 0%;
 }
 
 #tabs
 {
     text-align: center;
-    padding: 10px;
+    padding: 0%;
+    margin: 1%;
+    width: 98%;
+    height: 20%;
 }
 #tabs button 
 {
-    width: 200px;
-    height: 50px;
+    width: 15%;
+    height: 100%;
     border-radius: 20px;
+}
+
+#subtabs
+{
+    text-align: center;
+    padding: 0%;
+    width: 100%;
+    height: 15%;
+}
+
+#subtabs button 
+{
+    width: 10%;
+    height: 100%;
+    border-radius: 10px;
 }
 
 #display 
 {
     overflow-y: scroll;
-    height: 85%;
+    height: 80%;
     width: 100%;
     position: fixed;
-    top: 15%;
+    top: 20%;
     scrollbar-width: none;
 }
 
@@ -76,6 +115,7 @@ padding-left: 50px;
 {
     height: 200px;
     width: 300px;
+    margin: 10px;
 }
 
 
@@ -116,7 +156,8 @@ button:hover
     top: 40%;
     scrollbar-width: none;
 }
-#researchArea {
+#researchArea 
+{
     position: absolute;
     text-align: center;
     width: 100%;
@@ -124,11 +165,64 @@ button:hover
     margin: 0%;
     height: 100%;
 }
-#researchArea button {
+#researchArea button 
+{
     height: 20%;
     width: 10%;
     position: absolute;
 }
 
+#achievementArea {
+    height: 100%;
+    width: 100%;
+}
+
+.achievText {
+    text-align: center;
+
+}
 
 
+.achievement 
+{
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1%;
+    padding: 1px;
+}
+
+.achievName 
+{
+    position: relative;
+    padding: 1px;
+    margin: 1px;
+    font-size: 15px;
+    text-shadow: lightgray 3px 3px 3px;
+    width: calc(100% - 6px);
+    text-align: center;
+
+}
+
+.achievDesc
+{
+    position: relative;
+    padding: 1px;
+    margin: 1px;
+    font-size: 10px;
+    text-align: center;
+    width: calc(100% - 6px);
+}
+
+.achievReward
+{
+    position: absolute;
+    bottom: 0%;
+    padding: 1px;
+    margin: 1px;
+    font-size: 12px;
+    text-align: center;
+    width: calc(100% - 6px);
+}

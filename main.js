@@ -5,18 +5,21 @@
     var expectedTicks = 0n;
     var lastDate = Date.now();
     var autosaveTimer = 0;
+    var version = "0.2.0";
 
 
 
 
+    var tab;
 
-
-    var tab = 0;
+    var achievementPoints = 0;
+    var secretAchievementPoints = 0;
 
     var triangles = 0;
     var trianglesPerSecond = 0;
     var trianglesPerClick = 1;
 
+    var researchUnlocked = false;
     var researchTemp = 0;
     var researchScaling = 10;
     var research = 0;
@@ -24,6 +27,18 @@
     var researchThreshhold = 10;
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////    
+    var bodyBgColor = "darkslateblue";
+    var bodyTextColor = "aquamarine";
+    var headerHeight = 20;
+    var infopanelBgColor = "cornflowerblue";
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -82,7 +97,8 @@
     );
 
 
-    var printer = new Buyable("printer", 
+    var printer = new Buyable(
+        "printer", 
         0, 
         baseBuyableCosts[2], 
         baseBuyableCostScaling[2], 
@@ -146,64 +162,21 @@
     }
 
 
+    const upgradeNames = ["clickAmountUpgrade", "autoclickerIntervalUpgrade", "autoclickerCostScalingUpgrade", "drawerProductionUpgrade", "printerProductionUpgrade"];
+
+    const upgradeMaxes = [-1, -1, 5, -1, -1];
+
     const baseUpgradeCosts = [50, 100, 10000, 1000, 10000];
 
     const baseUpgradeCostScaling = [2.5, 2.5, 10, 1.5, 1.75];
 
+    var upgrades = [];
 
-    var clickAmountUpgrade = new Upgrade(
-        "clickAmountUpgrade", 
-        0, 
-        baseUpgradeCosts[0], 
-        baseUpgradeCostScaling[0], 
-        -1
-    );
-
-
-    var autoclickerIntervalUpgrade = new Upgrade(
-        "autoclickerIntervalUpgrade", 
-        0, 
-        baseUpgradeCosts[1],
-        baseUpgradeCostScaling[1], 
-        -1
-    );
-
-
-    var autoclickerCostScalingUpgrade = new Upgrade(
-        "autoclickerCostScalingUpgrade", 
-        0, 
-        baseUpgradeCosts[2], 
-        baseUpgradeCostScaling[2], 
-        5
-    );
-
-
-    var drawerProductionUpgrade = new Upgrade(
-        "drawerProductionUpgrade", 
-        0, 
-        baseUpgradeCosts[3], 
-        baseUpgradeCostScaling[3], 
-        -1
-    );
+    for (i in upgradeNames) {
+        upgrades.push(new Upgrade(upgradeNames[i], 0, baseUpgradeCosts[i], baseUpgradeCostScaling[i], upgradeMaxes[i]));
+    }
     
     
-    var printerProductionUpgrade = new Upgrade(
-        "printerProductionUpgrade", 
-        0, 
-        baseUpgradeCosts[4], 
-        baseUpgradeCostScaling[4], 
-        -1
-    );
-
-
-
-
-
-
-
-
-
-
 
 
     class Research {
@@ -425,13 +398,26 @@
 
     function respecResearch() {
 
+        achievements[8].have = true;
+
+        var tmp = true;
+        if (!secretAchievements[3].have) {
+            for (i of researches) {
+                if (i.bought) {
+                    tmp = false;
+                }
+            }
+            if (tmp) {
+                secretAchievements[3].have = true;
+            }
+        }
+
         research = totalResearch;
 
         for (var i of researches) {
                 i.bought = false;
             
         }
-
 
 
     }
@@ -481,78 +467,243 @@
         2,
         2,
         2,
-        1,
+        2,
         3,
         1,
         4,
     ];
 
+    var achievements = [];
+
+    for (var i = 0; i < achievementNames.length; i++) {
+        var tmp = new Achievement(achievementNames[i], Math.floor(i / 5) + 1, (i % 5) + 1, false, achievementDescriptions[i], achievementRewards[i]); 
+        achievements.push(tmp);
+    }
+
     function displayAchievements() {
+        var contents = ""; 
+        var achievement;
+        for (var i = 0; i < achievements.length; i++) {
+            achievement = achievements[i];
+            contents += "<div id=\"" 
+            + i 
+            + "\" class=\"achievement\" style=\" background-color: " + (achievement.have ? "green" : "red") + "; top: " 
+            + (achievement.row * 110) 
+            + "px; left: calc((100% - 5 * 110px) / 2 + " 
+            + (achievement.column - 1) 
+            + " * 110px);\"> <p class=\"achievName\">" 
+            + achievement.name 
+            + "</p>  <p class=\"achievDesc\">" 
+            + achievement.description 
+            + "</p>  <p class=\"achievReward\">Reward: " 
+            + achievement.reward 
+            + " AP</p> </div>";
+        }
+
+        document.getElementById("achievementArea").innerHTML = contents;
+
+    }
+
+var secretAchievementPoints = 0;
+
+    class SecretAchievement {
+        constructor(name, row, column, have, description, reward) {
+            this.name = name;
+            this.row = row;
+            this.column = column;
+            this.have = have;
+            this.description = description;
+            this.reward = reward;
+        }
+    }
+
+    var secretAchievementNames = [
+        "???",
+        "Indecisive",
+        "???", 
+        "You do know how these work, right?",
+        "???",
+        "All luck",
+        "Extreme luck",
+        "Just ask nicely",
+        "Unobtainable",
+        "???",
+    ];
+    var secretAchievementDescriptions = [
+        "???",
+        "Toggle mathematicians 100 times in a session.",
+        "???",
+        "Respec research without research",
+        "???",
+        "You have a 1 in 100,000 chance of getting this achievement each tick.",
+        "You have a 1 in 1,000,000,000 chance of getting this achievement each tick.",
+        "Click on this achievement",
+        "This achievement is unobtainable by normal means.",
+        "???",
+    ];
+    var secretAchievementRewards = [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        3,
+        1,
+        2,
+        1,
+    ];
+
+    var secretAchievements = [];
+
+    for (var i = 0; i < secretAchievementNames.length; i++) {
+        var tmp = new SecretAchievement(secretAchievementNames[i], Math.floor(i / 5) + 1, (i % 5) + 1, false, secretAchievementDescriptions[i], secretAchievementRewards[i]); 
+        secretAchievements.push(tmp);
+    }
+
+    function displaySecretAchievements() {
+        var content = ""; 
+        var achievement;
+        for (var i = 0; i < secretAchievements.length; i++) {
+            achievement = secretAchievements[i];
+            content += "<div id=\"" 
+            + i 
+            + "\" class=\"achievement\" style=\" background-color: " + (achievement.have ? "green" : "red") + "; top: " 
+            + (achievement.row * 110) 
+            + "px; left: calc((100% - 5 * 110px) / 2 + " 
+            + (achievement.column - 1) 
+            + " * 110px);\""
+            + (i == 7 ? "onclick=\"secretAchievements[7].have = true; displaySecretAchievements();\"" : "")
+            + "> <p class=\"achievName\">" 
+            + (achievement.have ? achievement.name : "???")
+            + "</p>  <p class=\"achievDesc\">" 
+            + (achievement.have ? achievement.description : "???")
+            + "</p>  <p class=\"achievReward\">Reward: " 
+            + (achievement.have ? achievement.reward : "???")
+            + " SAP</p> </div>";
+        }
+
+        document.getElementById("achievementArea").innerHTML = content;
 
     }
 
 
+    var changelog = "";
 
-
-
-
-    function mainTab() {
-        tab = 0;
-        display();
-    }
-
-    function upgradeTab() {
-        tab = 1;
-        display();
-    }
-    
-    function achievementsTab() {
-        tab = 2;
-        display();
-    }
-
-    function aboutTab() {
-        tab = 3;
-        display();
-    }
-
-    function optionsTab() {
-        tab = 4;
-        display();
-    }
-
-    function researchTab() {
-        tab = 5;
-        display();
-        displayResearches();
-    }
-
-    function display() {
+    function displayChangelog() {
         
+    }
+
+
+
+    var tab;
+    var subtab;
+
+    var tabs = ["main", "upgrades", "achievements", "about", "options"]; //main, upgrades, achievements, about, options, research
+    var subtabs = {
+        main: ["Main"],
+        upgrades: ["Triangle Upgrades"],
+        achievements: ["Achievements", "Secret Achievements"],
+        about: ["Credits", "Changelog"],
+        options: ["Options"],
+        research: ["Research"],
+    }
+   
+    function displayTabs() {
+        var tabHTML = "";
+        if (researchUnlocked && !tabs.includes("research")) {
+            tabs.push("research");
+        }
+        for (var i of tabs) {
+            tabHTML = tabHTML + "<button id=\"" + i + "\" onclick=\"displayContent(\'" + i + "\');\" onmouseover=\"hoverbutton = \'" + i + "tab\'\">" + i + "</button>";
+        }
+        document.getElementById("tabs").innerHTML = tabHTML;
+    }
+
+    displayTabs();
+
+    function displaySubTabs() {
+        var subTabHTML = "";
+        var selectedTab;
         switch (tab) {
-            case 0:
-                document.getElementById("display").innerHTML = document.getElementById("maintab").innerHTML;
+            case "main": 
+                selectedTab = subtabs.main;
                 break;
-            case 1:
-                document.getElementById("display").innerHTML = document.getElementById("upgradetab").innerHTML;
+            case "upgrades": 
+                selectedTab = subtabs.upgrades;
                 break;
-            case 2:
-                document.getElementById("display").innerHTML = document.getElementById("achievementstab").innerHTML;
+            case "achievements":
+                selectedTab = subtabs.achievements;
                 break;
-            case 3:
-                document.getElementById("display").innerHTML = document.getElementById("abouttab").innerHTML;
+            case "about":
+                selectedTab = subtabs.about;
                 break;
-            case 4:
-                document.getElementById("display").innerHTML = document.getElementById("optionstab").innerHTML;
+            case "options": 
+                selectedTab = subtabs.options;
                 break;
-            case 5:
-                document.getElementById("display").innerHTML = document.getElementById("researchtab").innerHTML;
-                break;            
+            case "research":
+                selectedTab = subtabs.research;
+                break;
+        }
+
+        for (var i of selectedTab) {
+            subTabHTML = subTabHTML + "<button id=\"" + i + "\" onclick=\"displayContent(\'" + i + "\');\" onmouseover=\"hoverbutton = \'" + i + "tab\'\">" + i + "</button>";
+        }
+        
+        document.getElementById("subtabs").innerHTML = subTabHTML;
+    }
+
+    function displayContent(selectedTab) {
+       
+       
+        if (tabs.includes(selectedTab)) {
+            
+            tab = selectedTab;
+            
+            switch (selectedTab) {
+                case "main":
+                    document.getElementById("display").innerHTML = document.getElementById("MainTabContent").innerHTML;
+                    break;
+                case "upgrades":
+                    document.getElementById("display").innerHTML = document.getElementById("Triangle UpgradesTabContent").innerHTML;
+                    break;
+                case "achievements":
+                    document.getElementById("display").innerHTML = document.getElementById("AchievementsTabContent").innerHTML;
+                    displayAchievements();
+                    break;
+                case "about":
+                    document.getElementById("display").innerHTML = document.getElementById("CreditsTabContent").innerHTML;
+                    break;
+                case "options":
+                    document.getElementById("display").innerHTML = document.getElementById("OptionsTabContent").innerHTML;
+                    break;
+                case "research":
+                    document.getElementById("display").innerHTML = document.getElementById("ResearchTabContent").innerHTML;
+                    displayResearches();
+                    break;            
+
+            }
+            displayTabs();
+            displaySubTabs();
+        
+        } else {
+            subtab = selectedTab;
+            document.getElementById("display").innerHTML = document.getElementById((selectedTab + "TabContent")).innerHTML;
+            if (subtab == "Achievements") {
+                displayAchievements();
+            }
+            if (subtab == "Secret Achievements") {
+                displaySecretAchievements();
+            }
+            if (subtab == "Research") {
+                displayResearches();
+            }
 
         }
     }
 
-    display();
+
+    displayContent("main");
 
 
 
@@ -563,9 +714,10 @@
         triangles += amount * trianglesPerClick;
     }
 
+    var tmpcounter0 = 0;
     function toggleMathematician() {
         mathematician.enabled = !mathematician.enabled;
-
+        tmpcounter0++;
     }
 
 
@@ -578,12 +730,12 @@
         
         allInfoboxContent.set('button1', "Click to gain " + trianglesPerClick + " triangles");
         
-        allInfoboxContent.set('tab1', "main tab");
-        allInfoboxContent.set('tab2', "upgrades tab");
-        allInfoboxContent.set('tab3', "achievements tab");
-        allInfoboxContent.set('tab4', "about tab");
-        allInfoboxContent.set('tab5', "option tab");
-        allInfoboxContent.set('tab6', "research tab");
+        allInfoboxContent.set('maintab', "main tab");
+        allInfoboxContent.set('upgradestab', "upgrades tab");
+        allInfoboxContent.set('achievementstab', "achievements tab");
+        allInfoboxContent.set('abouttab', "about tab");
+        allInfoboxContent.set('optiontab', "option tab");
+        allInfoboxContent.set('researchtab', "research tab");
         
         allInfoboxContent.set('autoclickerBuy', "Buy an autoclicker, each automatically clicks the button every " + autoclicker.interval + " milliseconds");
         allInfoboxContent.set('drawerBuy', "Buy a drawer, each draws " + drawer.production + " triangles per second.");
@@ -624,37 +776,53 @@
         //research, upgrades, buildings, main
         //amount, cost scaling, cost, production
 
+        achievementPoints = 0;
+        for (i of achievements) {
+            if (i.have) {
+                achievementPoints += i.reward;
+            }
+        }
+
+        secretAchievementPoints = 0;
+        for (i of secretAchievements) {
+            if (i.have) {
+                secretAchievementPoints += i.reward;
+            }
+        }
+
+
+
         // clickAmountUpgrade.amount = clickAmountUpgrade.amount;
-        clickAmountUpgrade.costScaling = baseUpgradeCostScaling[0];
-        clickAmountUpgrade.cost = baseUpgradeCosts[0] * (baseUpgradeCostScaling[0] ** clickAmountUpgrade.amount);
+        upgrades[0].costScaling = baseUpgradeCostScaling[0];
+        upgrades[0].cost = baseUpgradeCosts[0] * (baseUpgradeCostScaling[0] ** upgrades[0].amount);
         
         // autoclickerIntervalUpgrade.amount = 
-        autoclickerIntervalUpgrade.costScaling = baseUpgradeCostScaling[1];
-        autoclickerIntervalUpgrade.cost = baseUpgradeCosts[1] * (baseUpgradeCostScaling[1] ** autoclickerIntervalUpgrade.amount);
+        upgrades[1].costScaling = baseUpgradeCostScaling[1];
+        upgrades[1].cost = baseUpgradeCosts[1] * (baseUpgradeCostScaling[1] ** upgrades[1].amount);
         
         // autoclickerCostScalingUpgrade.amount = 
-        autoclickerCostScalingUpgrade.costScaling = baseUpgradeCostScaling[2];
-        autoclickerCostScalingUpgrade.cost = baseUpgradeCosts[2] * (baseUpgradeCostScaling[2] ** autoclickerCostScalingUpgrade.amount);
+        upgrades[2].costScaling = baseUpgradeCostScaling[2];
+        upgrades[2].cost = baseUpgradeCosts[2] * (baseUpgradeCostScaling[2] ** upgrades[2].amount);
 
         // drawerProductionUpgrade.amount = 
-        drawerProductionUpgrade.costScaling = baseUpgradeCostScaling[3];
-        drawerProductionUpgrade.cost = baseUpgradeCosts[3] * (baseUpgradeCostScaling[3] ** drawerProductionUpgrade.amount);
+        upgrades[3].costScaling = baseUpgradeCostScaling[3];
+        upgrades[3].cost = baseUpgradeCosts[3] * (baseUpgradeCostScaling[3] ** upgrades[3].amount);
 
         // printerProductionUpgrade.amount = 
-        printerProductionUpgrade.costScaling = baseUpgradeCostScaling[4];
-        printerProductionUpgrade.cost = baseUpgradeCosts[4] * (baseUpgradeCostScaling[4] ** printerProductionUpgrade.amount);
+        upgrades[4].costScaling = baseUpgradeCostScaling[4];
+        upgrades[4].cost = baseUpgradeCosts[4] * (baseUpgradeCostScaling[4] ** upgrades[4].amount);
 
         
         // autoclicker.amount
-        autoclicker.costScaling = baseBuyableCostScaling[0] - 0.1 * autoclickerCostScalingUpgrade.amount;
+        autoclicker.costScaling = baseBuyableCostScaling[0] - 0.1 * upgrades[2].amount;
         autoclicker.cost = baseBuyableCosts[0] * (autoclicker.costScaling ** autoclicker.amount);
         // autoclicker.production = 
-        autoclicker.interval = 10000 * (0.8 ** autoclickerIntervalUpgrade.amount);
+        autoclicker.interval = 10000 * (0.8 ** upgrades[1].amount);
         
         //drawer.amount
         drawer.costScaling = baseBuyableCostScaling[1];
         drawer.cost = baseBuyableCosts[1] * (drawer.costScaling ** drawer.amount);
-        drawer.production = baseBuyableProduction[1] + drawerProductionUpgrade.amount;
+        drawer.production = baseBuyableProduction[1] + upgrades[3].amount;
         drawer.production = drawer.production * (1 + _1_1.bought);
         drawer.production = drawer.production * (1 + 3 * _2_2.bought);
         drawer.production = drawer.production * (1 + 4 * _3_3.bought);
@@ -663,7 +831,7 @@
         //printer.amount
         printer.costScaling = baseBuyableCostScaling[2];
         printer.cost = baseBuyableCosts[2] * (printer.costScaling ** printer.amount);
-        printer.production = baseBuyableProduction[2] * (1.2 ** printerProductionUpgrade.amount);
+        printer.production = baseBuyableProduction[2] * (1.2 ** upgrades[4].amount);
         printer.production = printer.production * (1 + 2 * _3_5.bought);
 
         //mathematician.amount
@@ -680,8 +848,10 @@
         if (triangles + mathematician.production >= 0) {
             trianglesPerSecond += (mathematician.production * (mathematician.enabled)) * mathematician.amount;
         }
-        trianglesPerClick = 1 + clickAmountUpgrade.amount;
+        trianglesPerClick = 1 + upgrades[0].amount;
         
+        trianglesPerSecond *= (1 + 0.01 * achievementPoints);
+
         triangles += trianglesPerSecond / 20;
 
         triangleClick(autoclicker.amount * 50 / autoclicker.interval);
@@ -691,6 +861,12 @@
         if (triangles + mathematician.production >= 0 && mathematician.enabled) {
             researchTemp += -1 * mathematician.production / 20 * mathematician.amount;
         }
+
+        if (!researchUnlocked && (mathematician.amount > 0)) {
+            researchUnlocked = (mathematician.amount > 0);
+            displayTabs();
+        }
+
 
         totalResearch = Math.trunc(Math.log(researchTemp) / Math.log(researchScaling));
         if (research > totalResearch) {
@@ -706,6 +882,103 @@
 
         researchThreshhold = 10 * (researchScaling ** totalResearch);
 
+    }
+
+    function checkAchievements() {
+
+        // "Get a triangle"
+        if (triangles > 0) {
+            achievements[0].have = true;
+        }
+
+        //"Buy an autoclicker"
+        if (autoclicker.amount > 0) {
+            achievements[1].have = true;
+        }
+
+        //"Buy an upgrade"
+        for (i of upgrades) {
+            if (i.amount > 0) {
+                achievements[2].have = true;
+            }
+        }
+
+        //"Buy a drawer"
+        if (drawer.amount > 0) {
+            achievements[3].have = true;
+        }
+
+        //"Buy a printer"
+        if (printer.amount > 0) {
+            achievements[4].have = true;
+        }
+
+        //"Buy a mathematician"
+        if (mathematician.amount > 0) {
+            achievements[5].have = true;
+        }
+
+        //"Buy a research"
+        for (i of researches) {
+            if (i.bought == true) {
+                achievements[6].have = true;
+            }
+        }
+
+        //"Have a negative value for triangles per second"
+        if (trianglesPerSecond < 0) {
+            achievements[7].have = true; 
+        }
+
+        //"Respec research"
+
+        //"Max out an upgrade"
+        for (i of upgrades) {
+            if (i.amount == i.max) {
+                achievements[9].have = true;
+            }
+        }
+    ////////////////////////////////////// Secret Achievements //////////////////////////////////////////
+    
+     //"???",
+       
+     
+     //"Toggle mathematicians 100 times in a session.",
+       if (tmpcounter0 > 99) {
+        secretAchievements[1].have = true;
+       }
+     
+     
+     //"???",
+     
+     
+     //"Respec research without research",
+       
+     
+     //"???",
+       
+     
+     //"You have a 1 in 100,000 chance of getting this achievement each tick.",
+        if (Math.random * 100000 <= 1) {
+            secretAchievements[5].have = true;
+        }
+
+     
+     //"You have a 1 in 1,000,000,000 chance of getting this achievement each tick.",
+        if (Math.random * 1000000000 <= 1) {
+            secretAchievements[6].have = true;
+        }
+     
+     //"Click on this achievement",
+       
+     
+     //"This achievement is unobtainable by normal means.",
+       
+     
+     //"???",
+    
+    
+    
     }
 
     function loadAutoSave() {
@@ -729,11 +1002,11 @@
             if (typeof obj.buyables[3].amount !== "undefined") mathematician.amount = obj.buyables[3].amount;
             if (typeof obj.buyables[3].enabled !== "undefined") mathematician.enabled = obj.buyables[3].enabled;
 
-            if (typeof obj.upgrades[0].amount !== "undefined") clickAmountUpgrade.amount = obj.upgrades[0].amount;
-            if (typeof obj.upgrades[1].amount !== "undefined") autoclickerIntervalUpgrade.amount = obj.upgrades[1].amount;
-            if (typeof obj.upgrades[2].amount !== "undefined") autoclickerCostScalingUpgrade.amount = obj.upgrades[2].amount;
-            if (typeof obj.upgrades[3].amount !== "undefined") drawerProductionUpgrade.amount = obj.upgrades[3].amount;
-            if (typeof obj.upgrades[4].amount !== "undefined") printerProductionUpgrade.amount = obj.upgrades[4].amount;
+            if (typeof obj.upgrades[0].amount !== "undefined") upgrades[0].amount = obj.upgrades[0].amount;
+            if (typeof obj.upgrades[1].amount !== "undefined") upgrades[1].amount = obj.upgrades[1].amount;
+            if (typeof obj.upgrades[2].amount !== "undefined") upgrades[2].amount = obj.upgrades[2].amount;
+            if (typeof obj.upgrades[3].amount !== "undefined") upgrades[3].amount = obj.upgrades[3].amount;
+            if (typeof obj.upgrades[4].amount !== "undefined") upgrades[4].amount = obj.upgrades[4].amount;
             
             if (typeof obj.researches !== "undefined") {
                 for (var i of researches) {
@@ -743,6 +1016,18 @@
                 }
             }
 
+            if (typeof obj.achievements !== "undefined") {
+                for (var i of achievements) {
+                    if (obj.achievements.includes(i.name)) {
+                        i.have = true;
+                    }
+                }
+                for (var i of secretAchievements) {
+                    if (obj.achievements.includes(i.name)) {
+                        i.have = true;
+                    }
+                }
+            }
 
             if (typeof obj.time !== "undefined") lastDate = obj.time;
             
@@ -775,6 +1060,8 @@
         
         
         updateNumbers();
+
+        checkAchievements();
         
         //update number displays
         document.getElementById("triangleDisplay").innerHTML = round(triangles, 2);
@@ -786,10 +1073,12 @@
         document.getElementById("researchThreshholdDisplay").innerHTML = round(researchThreshhold, 2);
         
         document.getElementById("achievementPointDisplay").innerHTML = round(achievementPoints, 1);
-        document.getElementById("achievementPointBonusDisplay").innerHTML = round((achievementPoints / 100), 2);
+        document.getElementById("achievementPointBonusDisplay").innerHTML = "+" + round((achievementPoints), 2) + "%";
         
+        document.getElementById("secretAchievementPointDisplay").innerHTML = round(secretAchievementPoints, 1);
+
         
-        document.getElementById("clickAmountUpgradeEffectDisplay").innerHTML = round(clickAmountUpgrade.amount + 1, 2);
+        document.getElementById("clickAmountUpgradeEffectDisplay").innerHTML = round(upgrades[0].amount + 1, 2);
         document.getElementById("autoclickerIntervalUpgradeEffectDisplay").innerHTML = round(autoclicker.interval, 3);
         document.getElementById("autoclickerCostScalingUpgradeEffectDisplay").innerHTML = round(autoclicker.costScaling, 3);
         document.getElementById("drawerProductionUpgradeEffectDisplay").innerHTML = round(drawer.production, 3);
@@ -802,12 +1091,9 @@
 
 
 
-        clickAmountUpgrade.displayNumbers();
-        autoclickerIntervalUpgrade.displayNumbers();
-        autoclickerCostScalingUpgrade.displayNumbers();
-        drawerProductionUpgrade.displayNumbers();
-        printerProductionUpgrade.displayNumbers();
-
+        for (i of upgrades) {
+            i.displayNumbers();
+        }
 
 
 
@@ -817,9 +1103,6 @@
         //display info
         updateInfoboxContent();
         document.getElementById("infopanel").innerHTML = "<p>" + infoboxContent + "</p>";
-        if (mathematician.amount > 0) {
-            document.getElementById("tab6").style.visibility = 'visible';
-        }
         if (mathematician.enabled) {
             document.getElementById("mathematicianEnable").innerHTML = 'on';
         } else {
@@ -898,6 +1181,9 @@
         ],
         researches: [
             ""
+        ],
+        achievements: [
+            ""
         ]
 
     };
@@ -929,12 +1215,9 @@
             tmpSave.buyables[3].amount = mathematician.amount;
             tmpSave.buyables[3].enabled = mathematician.enabled;
 
-            
-            tmpSave.upgrades[0].amount = clickAmountUpgrade.amount;
-            tmpSave.upgrades[1].amount = autoclickerIntervalUpgrade.amount;
-            tmpSave.upgrades[2].amount = autoclickerCostScalingUpgrade.amount;
-            tmpSave.upgrades[3].amount = drawerProductionUpgrade.amount;
-            tmpSave.upgrades[4].amount = printerProductionUpgrade.amount;
+            for (i in upgrades) {
+                tmpSave.upgrades[i].amount = upgrades[i].amount;
+            }
             
             tmpSave.researches = [""];
             for (var i of researches) {
@@ -942,7 +1225,18 @@
                     tmpSave.researches.push(i.name);
                 }
             }
-
+           
+            tmpSave.achievements = [""];
+            for (var i of achievements) {
+                if (i.have) {
+                    tmpSave.achievements.push(i.name);
+                }
+            }
+            for (var i of secretAchievements) {
+                if (i.have) {
+                    tmpSave.achievements.push(i.name);
+                }
+            }
             localStorage.setItem('save', JSON.stringify(tmpSave));
             autosaveTimer = 0;
         }
